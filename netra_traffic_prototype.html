@@ -1,35 +1,1234 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NETRA Traffic Command Prototype</title><style>
-:root{--bg:#0b1220;--p:#142137;--line:#2a3b54;--txt:#eaf1fb;--muted:#9aacc4;--green:#31d0a0;--red:#ff647c;--yellow:#ffb547;--orange:#ff8a24;--blue:#62a8ff}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:14px Segoe UI,Arial}button,input,select{font:inherit}button{background:#1d304a;color:white;border:1px solid #39516f;border-radius:8px;padding:8px 10px;cursor:pointer}button:hover{filter:brightness(1.2)}.primary{background:#2369cf}.danger{background:#4a1f2b}.orange{background:#59351c;border-color:#a85e25}.app{display:grid;grid-template-columns:200px 1fr;min-height:100vh}.side{background:#0c1524;padding:22px 14px;border-right:1px solid var(--line)}.brand{font-weight:900;font-size:17px}.brand span{color:var(--green)}.sub{font-size:10px;color:var(--muted);margin:5px 0 28px}.nav div{padding:11px;margin:5px 0;color:var(--muted);border-radius:8px}.nav .active{background:#1b2b42;color:white}.main{padding:22px;max-width:1600px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.eyebrow{color:var(--green);font-size:11px;letter-spacing:1.5px;font-weight:bold}.h1{font-size:25px;font-weight:800;margin:4px 0}.muted{color:var(--muted)}.tag{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:4px 7px;border-radius:7px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}.stat,.panel{background:linear-gradient(145deg,#142137,#101a2a);border:1px solid var(--line);border-radius:13px}.stat{padding:15px}.statlabel{font-size:12px;color:var(--muted)}.statval{font-size:25px;font-weight:800;margin:5px 0}.statfoot{font-size:11px;color:var(--green)}.layout{display:grid;grid-template-columns:1.4fr 1fr;gap:14px}.panel{padding:15px;margin-bottom:14px;min-width:0}.ph{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}.pt{font-weight:750;font-size:15px}.signalgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.signal{background:#0d1727;border:1px solid var(--line);border-radius:10px;padding:11px}.sighead{display:flex;justify-content:space-between;gap:6px}.sigid{font-size:11px;color:var(--muted);margin-top:3px}.light{display:flex;gap:4px;background:#050b13;padding:5px;border-radius:16px;height:22px}.bulb{width:11px;height:11px;border-radius:50%;background:#283548}.red.on{background:var(--red);box-shadow:0 0 7px var(--red)}.yellow.on{background:var(--yellow);box-shadow:0 0 7px var(--yellow)}.green.on{background:var(--green);box-shadow:0 0 7px var(--green)}.density{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin:12px 0 6px}.bar{height:6px;background:#243248;border-radius:8px;overflow:hidden}.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--yellow),var(--red))}.fields,.emform,.vehicleform{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}.field input,.field select{width:100%;min-width:0;background:#0b1422;border:1px solid var(--line);color:white;border-radius:7px;padding:8px}.actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}.small{font-size:11px;padding:5px 7px}.full{grid-column:1/-1}.mapwrap{background:#0a1422;border:1px solid var(--line);border-radius:10px;overflow:hidden}.map{display:block;width:100%;height:auto}.legend{display:flex;gap:12px;flex-wrap:wrap;padding:10px;color:var(--muted);font-size:11px}.legend i{display:inline-block;width:18px;height:4px;margin-right:4px;vertical-align:middle}.notice{padding:10px;border-radius:8px;background:#2b2116;border:1px solid #6f4926;color:#ffd5a6;font-size:12px;margin-top:10px}.success{background:#102a27;border-color:#236d5c;color:#aaf3dd}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:12px}td,th{text-align:left;padding:9px 7px;border-bottom:1px solid var(--line);white-space:nowrap}th{color:var(--muted)}.status{border-radius:5px;padding:4px 6px;font-size:10px}.st-red{background:#451f2a;color:#ff9aaa}.st-green{background:#123c33;color:#7df0c9}.empty{color:var(--muted);padding:12px}.foot{font-size:11px;color:var(--muted);text-align:center;margin-top:8px}.toast{display:none;position:fixed;bottom:20px;right:20px;padding:12px;background:#163a33;border:1px solid #2a816b;border-radius:9px}.toast.show{display:block}
-@media(max-width:1000px){.app{grid-template-columns:1fr}.side{display:none}.layout{grid-template-columns:1fr}.main{padding:14px}}@media(max-width:560px){.stats{grid-template-columns:1fr 1fr}.signalgrid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.fields,.emform,.vehicleform{grid-template-columns:1fr}.full{grid-column:auto}}
-</style></head><body><div class="app"><aside class="side"><div class="brand">NETRA<span>●</span> TRAFFIC</div><div class="sub">SMART CITY COMMAND CENTER</div><div class="nav"><div class="active">▦ &nbsp; Live dashboard</div><div>◉ &nbsp; Signal control</div><div>⌁ &nbsp; Emergency routing</div><div>▣ &nbsp; Vehicle registry</div><div>⚑ &nbsp; Blacklist</div><div>◷ &nbsp; Activity log</div></div><p class="muted" style="font-size:11px;margin-top:45px">5 junctions configured<br>Local demo simulation</p></aside><main class="main">
-<div class="top"><div><div class="eyebrow">INTELLIGENT TRANSPORT SYSTEM</div><div class="h1">Traffic Operations Dashboard</div><div class="muted">Control junctions, prioritize emergency vehicles, manage vehicle access.</div></div><div><span style="color:var(--green)">● DEMO LIVE</span> <span class="tag" id="clock"></span></div></div>
-<div class="stats"><div class="stat"><div class="statlabel">Active intersections</div><div class="statval">5</div><div class="statfoot">Controllers simulated</div></div><div class="stat"><div class="statlabel">Vehicles counted</div><div class="statval" id="total">248</div><div class="statfoot">Demo counts</div></div><div class="stat"><div class="statlabel">Blacklisted plates</div><div class="statval" id="blcount">2</div><div class="statfoot">Local registry</div></div><div class="stat"><div class="statlabel">Emergency routes active</div><div class="statval" id="emcount">0</div><div class="statfoot">Orange route on map</div></div></div>
-<div class="layout"><section><div class="panel"><div class="ph"><div class="pt">Intersection control</div><span class="tag">5 junctions</span></div><div id="signals" class="signalgrid"></div><div class="foot">Set signal phases, vehicle count and green duration. Changes apply to this demo only.</div></div>
-<div class="panel"><div class="ph"><div class="pt">City route map</div><span class="tag" id="rstatus">No emergency route</span></div><div class="mapwrap"><svg class="map" viewBox="0 0 720 400" aria-label="Schematic map of five junctions"><defs><pattern id="blocks" width="42" height="42" patternUnits="userSpaceOnUse"><rect width="32" height="32" x="5" y="5" rx="5" fill="#15253a"/></pattern></defs><rect width="720" height="400" fill="#0c1827"/><rect width="720" height="400" fill="url(#blocks)"/><g stroke="#34465e" stroke-width="27" fill="none" stroke-linecap="round"><path d="M30 100H690M30 300H690M140 20V380M360 20V380M580 20V380M140 200H580"/></g><g stroke="#7b8ba1" stroke-width="1.5" stroke-dasharray="8 8" fill="none"><path d="M30 100H690M30 300H690M140 20V380M360 20V380M580 20V380M140 200H580"/></g><g id="routeLayer"></g><g fill="#e7f0ff" font-size="11" font-weight="700"><text x="153" y="82">J1 • CENTRAL</text><text x="373" y="82">J2 • MALL RD</text><text x="593" y="82">J3 • HOSPITAL</text><text x="153" y="282">J4 • STATION</text><text x="373" y="282">J5 • RING RD</text></g><g id="mapSignals"></g></svg><div class="legend"><span><i style="background:#31d0a0"></i>Green signal</span><span><i style="background:#ff647c"></i>Red signal</span><span><i style="background:#ff8a24"></i>Emergency route</span></div></div><div class="notice" id="routeNotice">Emergency routing is idle. Choose a vehicle and route to draw the priority path in orange.</div></div>
-<div class="panel"><div class="ph"><div class="pt">Vehicle registry & blacklist</div><span class="tag">Local demo data</span></div><div class="vehicleform"><div class="field"><label>Registration number</label><input id="plate" placeholder="HR26AB1234" maxlength="15"></div><div class="field"><label>Reason / note</label><input id="reason" placeholder="e.g. access denied"></div><div class="field"><label>Vehicle type</label><select id="vtype"><option>Car</option><option>Truck</option><option>Motorcycle</option><option>Bus</option><option>Taxi</option></select></div><div class="field"><label>Set status</label><select id="vaction"><option value="blacklist">Blacklist vehicle</option><option value="allow">Mark allowed</option></select></div><button class="primary full" onclick="addVehicle()">Save vehicle status</button></div><div class="tablewrap" style="margin-top:12px"><table><thead><tr><th>Registration</th><th>Type</th><th>Status</th><th>Note</th><th>Action</th></tr></thead><tbody id="vehicles"></tbody></table></div></div></section>
-<section><div class="panel"><div class="ph"><div class="pt">Emergency vehicle routing</div><span class="tag">PRIORITY</span></div><div class="emform"><div class="field"><label>Emergency vehicle ID / plate</label><input id="emPlate" value="HR26-AMB-001"></div><div class="field"><label>Vehicle type</label><select id="emType"><option>Ambulance</option><option>Fire engine</option><option>Police</option></select></div><div class="field"><label>Start junction</label><select id="emStart"><option value="J1">J1 — Central</option><option value="J2">J2 — Mall Road</option><option value="J3">J3 — Hospital</option><option value="J4">J4 — Station</option><option value="J5">J5 — Ring Road</option></select></div><div class="field"><label>Destination</label><select id="emEnd"><option value="J3">J3 — Hospital</option><option value="J1">J1 — Central</option><option value="J2">J2 — Mall Road</option><option value="J4">J4 — Station</option><option value="J5">J5 — Ring Road</option></select></div><div class="field full"><label>Routing mode</label><select id="routeMode"><option value="priority">Orange route + green-wave simulation</option><option value="routeonly">Highlight route only</option></select></div><button class="orange full" onclick="activateEmergency()">Update emergency route →</button><button class="danger full" onclick="clearEmergency()">Clear emergency route</button></div><div class="notice success" id="emStatus">No active emergency vehicle. Signal priority is simulated.</div></div>
-<div class="panel"><div class="ph"><div class="pt">System alerts</div><button class="small" onclick="clearAlerts()">Clear alerts</button></div><div id="alerts" class="empty">No alerts yet.</div></div><div class="panel"><div class="ph"><div class="pt">Recent activity</div><span class="tag">This session</span></div><div id="activity" class="empty">Actions appear here.</div></div><div class="panel"><div class="pt">Prototype limits</div><p class="muted" style="font-size:12px">This is a working local web prototype: controls, blacklist, alerts and orange route drawing work in the browser. It does NOT control public traffic lights, read live cameras/ANPR, or communicate with emergency services. Real deployment needs a backend, camera/ANPR integration, controller hardware, networking and road-authority approval.</p></div></section></div><div class="foot">NETRA Traffic Command • Student prototype • Simulated data only</div></main></div><div class="toast" id="toast"></div>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NETRA Traffic Command • Dijkstra Dynamic Route Optimizer</title>
+<style>
+:root{
+  --bg:#0b1220;--p:#142137;--line:#2a3b54;--txt:#eaf1fb;--muted:#9aacc4;
+  --green:#31d0a0;--red:#ff647c;--yellow:#ffb547;--orange:#ff8a24;--blue:#62a8ff;
+  --panel-bg:linear-gradient(145deg,#142137,#101a2a);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:14px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+button,input,select{font:inherit}
+button{background:#1d304a;color:white;border:1px solid #39516f;border-radius:8px;padding:8px 12px;cursor:pointer;transition:all .15s ease}
+button:hover{filter:brightness(1.2);transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+.primary{background:#2369cf;border-color:#3f83e6}
+.danger{background:#541d2a;border-color:#84293e}
+.orange{background:#693a17;border-color:#b46429}
+.accent-btn{background:#123c33;border-color:#2a8b71;color:#6bf0c7;font-weight:700}
+.app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+.side{background:#0c1524;padding:22px 14px;border-right:1px solid var(--line)}
+.brand{font-weight:900;font-size:17px;letter-spacing:0.5px}
+.brand span{color:var(--green)}
+.sub{font-size:10px;color:var(--muted);margin:5px 0 24px;letter-spacing:1px}
+.nav div{padding:10px 12px;margin:4px 0;color:var(--muted);border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px}
+.nav div:hover{background:#132034;color:var(--txt)}
+.nav .active{background:#1b2b42;color:white;font-weight:600}
+.main{padding:22px;max-width:1600px;width:100%;margin:auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+.eyebrow{color:var(--green);font-size:11px;letter-spacing:1.5px;font-weight:bold}
+.h1{font-size:24px;font-weight:800;margin:4px 0}
+.muted{color:var(--muted)}
+.tag{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:4px 8px;border-radius:7px;background:#0e1726}
+.tag.active-tag{color:var(--green);border-color:rgba(49,208,160,0.4);background:rgba(49,208,160,0.1)}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:14px}
+.stat,.panel{background:var(--panel-bg);border:1px solid var(--line);border-radius:13px}
+.stat{padding:14px 16px;position:relative;overflow:hidden}
+.stat::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--line)}
+.stat.glow-green::after{background:var(--green)}
+.stat.glow-orange::after{background:var(--orange)}
+.statlabel{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+.statval{font-size:24px;font-weight:800;margin:6px 0 3px}
+.statfoot{font-size:11px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:1.35fr 1fr;gap:14px}
+.panel{padding:16px;margin-bottom:14px;min-width:0}
+.ph{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px}
+.pt{font-weight:750;font-size:15px;display:flex;align-items:center;gap:8px}
+.signalgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.signal{background:#0d1727;border:1px solid var(--line);border-radius:10px;padding:12px}
+.sighead{display:flex;justify-content:space-between;gap:6px}
+.sigid{font-size:11px;color:var(--muted);margin-top:3px}
+.light{display:flex;gap:4px;background:#050b13;padding:5px;border-radius:16px;height:22px;align-items:center}
+.bulb{width:11px;height:11px;border-radius:50%;background:#283548;transition:all .2s ease}
+.red.on{background:var(--red);box-shadow:0 0 9px var(--red)}
+.yellow.on{background:var(--yellow);box-shadow:0 0 9px var(--yellow)}
+.green.on{background:var(--green);box-shadow:0 0 9px var(--green)}
+.density{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin:12px 0 6px}
+.bar{height:6px;background:#243248;border-radius:8px;overflow:hidden}
+.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--yellow),var(--red));transition:width .3s ease}
+.fields,.emform,.vehicleform{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600}
+.field input,.field select{width:100%;min-width:0;background:#0b1422;border:1px solid var(--line);color:white;border-radius:7px;padding:8px 10px}
+.field input:focus,.field select:focus{outline:none;border-color:var(--blue)}
+.actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+.small{font-size:11px;padding:5px 8px}
+.full{grid-column:1/-1}
+.mapwrap{background:#0a1422;border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative}
+.map{display:block;width:100%;height:auto}
+.legend{display:flex;gap:14px;flex-wrap:wrap;padding:10px 14px;color:var(--muted);font-size:11px;background:#09121f;border-top:1px solid var(--line)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:16px;height:4px;border-radius:2px}
+.notice{padding:12px 14px;border-radius:8px;background:#2b2116;border:1px solid #6f4926;color:#ffd5a6;font-size:12px;margin-top:12px;line-height:1.45}
+.notice.success{background:#0e2823;border-color:#206e5b;color:#a8f0dc}
+.notice.info{background:#11243d;border-color:#25538e;color:#b8d6fc}
+.tablewrap{overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+td,th{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--muted);font-weight:600}
+.status{border-radius:5px;padding:3px 7px;font-size:10px;font-weight:bold;letter-spacing:0.5px}
+.st-red{background:#451f2a;color:#ff9aaa;border:1px solid #75283b}
+.st-green{background:#123c33;color:#7df0c9;border:1px solid #236d5c}
+.empty{color:var(--muted);padding:14px;text-align:center;font-size:12px}
+.foot{font-size:11px;color:var(--muted);text-align:center;margin-top:12px}
+.toast{display:none;position:fixed;bottom:24px;right:24px;padding:12px 18px;background:#103830;border:1px solid #288c73;border-radius:9px;color:#8bf9d8;box-shadow:0 10px 30px rgba(0,0,0,0.5);font-weight:600;z-index:99}
+.toast.show{display:block;animation:fadeIn .2s ease}
+
+/* Dijkstra Specific Styling */
+.dijkstra-card{background:#0c1729;border:1px solid #264268;border-radius:10px;padding:14px;margin-top:12px}
+.dijkstra-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.best-route-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;font-weight:700}
+.best-route-badge{background:rgba(49,208,160,0.15);color:var(--green);border:1px solid rgba(49,208,160,0.4);font-size:11px;padding:3px 8px;border-radius:6px;font-weight:700}
+.route-sequence{font-size:16px;font-weight:800;color:white;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:4px 0 10px}
+.route-sequence .arrow{color:var(--orange);font-weight:900}
+.metric-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.metric-box{background:#08101c;border:1px solid var(--line);border-radius:8px;padding:9px;text-align:center}
+.metric-box .m-label{font-size:10px;color:var(--muted);text-transform:uppercase}
+.metric-box .m-val{font-size:16px;font-weight:800;margin-top:2px}
+.time-saved-callout{background:linear-gradient(135deg,#231c12,#342111);border:1px solid #a35d24;border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.saved-text{font-size:12px;color:#ffe1c4}
+.saved-bold{font-size:15px;font-weight:900;color:#ffaa59}
+.paths-table{width:100%;font-size:11px;margin-top:8px}
+.paths-table th{background:#09121f;padding:6px 8px}
+.paths-table td{padding:7px 8px}
+.paths-table tr.optimal-row{background:rgba(49,208,160,0.08);color:#dcfce7;font-weight:600}
+.badge-optimal{background:var(--green);color:#05241b;padding:2px 5px;border-radius:4px;font-size:9px;font-weight:900}
+.badge-slower{background:#4a2327;color:#fca5a5;padding:2px 5px;border-radius:4px;font-size:9px;font-weight:700}
+.formula-pill{font-size:10px;color:#7e94b2;background:#08101c;border:1px solid var(--line);padding:6px 10px;border-radius:6px;margin-top:8px;line-height:1.4}
+.toggle-btn{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:11px;padding:4px 8px;border-radius:6px;cursor:pointer}
+.toggle-btn:hover{color:white;border-color:var(--muted)}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:1200px){.stats{grid-template-columns:repeat(3,1fr)}.layout{grid-template-columns:1fr}}
+@media(max-width:1000px){.app{grid-template-columns:1fr}.side{display:none}.main{padding:14px}}
+@media(max-width:640px){.stats{grid-template-columns:1fr 1fr}.signalgrid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.fields,.emform,.vehicleform{grid-template-columns:1fr}.full{grid-column:auto}.metric-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="brand">NETRA<span>●</span> TRAFFIC</div>
+  <div class="sub">SMART CITY COMMAND CENTER</div>
+  <div class="nav">
+    <div class="active">▦ &nbsp; Live Dashboard</div>
+    <div>◉ &nbsp; Signal Control</div>
+    <div>⚡ &nbsp; Dijkstra Optimizer</div>
+    <div>⌁ &nbsp; Emergency Priority</div>
+    <div>▣ &nbsp; Vehicle Registry</div>
+    <div>⚑ &nbsp; Blacklist Records</div>
+    <div>◷ &nbsp; Event Log</div>
+  </div>
+  <div style="margin-top:40px;background:#09121e;border:1px solid var(--line);padding:12px;border-radius:8px">
+    <div style="font-size:11px;font-weight:700;color:var(--green)">⚡ DIJKSTRA ENGINE</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4">
+      Real-time edge weights computed from live junction density, queue counts, and signal delays.
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+  <!-- Top Bar -->
+  <div class="top">
+    <div>
+      <div class="eyebrow">INTELLIGENT TRANSPORT SYSTEM • NETRA COMMAND</div>
+      <div class="h1">Traffic Operations & Dijkstra Route Optimizer</div>
+      <div class="muted">Real-time adaptive signal control, Dijkstra shortest-travel-time routing, and emergency green-waves.</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="tag active-tag">● DIJKSTRA ACTIVE</span>
+      <span class="tag" id="clock">--:--:--</span>
+    </div>
+  </div>
+
+  <!-- Key Metrics Strip -->
+  <div class="stats">
+    <div class="stat">
+      <div class="statlabel">Intersections</div>
+      <div class="statval">5</div>
+      <div class="statfoot">Adaptive controllers</div>
+    </div>
+    <div class="stat">
+      <div class="statlabel">Vehicles Monitored</div>
+      <div class="statval" id="total">248</div>
+      <div class="statfoot">Network total volume</div>
+    </div>
+    <div class="stat glow-green">
+      <div class="statlabel">Best Route Time</div>
+      <div class="statval" id="statBestTime" style="color:var(--green)">--</div>
+      <div class="statfoot" id="statBestRoute">Dijkstra optimal</div>
+    </div>
+    <div class="stat glow-orange">
+      <div class="statlabel">Time Saved vs Congestion</div>
+      <div class="statval" id="statTimeSaved" style="color:var(--orange)">--</div>
+      <div class="statfoot" id="statTimeSavedFoot">Optimal vs congested</div>
+    </div>
+    <div class="stat">
+      <div class="statlabel">Blacklist Registry</div>
+      <div class="statval" id="blcount">2</div>
+      <div class="statfoot">Security flagged plates</div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- LEFT COLUMN -->
+    <section>
+      <!-- Intersection Control Panel -->
+      <div class="panel">
+        <div class="ph">
+          <div class="pt"><span>◉</span> Adaptive Intersection Controllers</div>
+          <span class="tag">5 Smart Junctions</span>
+        </div>
+        <div id="signals" class="signalgrid"></div>
+        <div class="foot">Adjust signal phases, vehicle queue counts, or green timings. Dijkstra recalculates optimal routes dynamically.</div>
+      </div>
+
+      <!-- Route Visualizer & City Map -->
+      <div class="panel">
+        <div class="ph">
+          <div class="pt"><span>⚡</span> City Grid Schematic & Dijkstra Visualizer</div>
+          <span class="tag active-tag" id="rstatus">Dijkstra Ready</span>
+        </div>
+        <div class="mapwrap">
+          <svg class="map" viewBox="0 0 720 400" aria-label="Schematic map of city intersections and road corridors">
+            <defs>
+              <pattern id="blocks" width="42" height="42" patternUnits="userSpaceOnUse">
+                <rect width="32" height="32" x="5" y="5" rx="5" fill="#15253a"/>
+              </pattern>
+            </defs>
+            <!-- Map Background -->
+            <rect width="720" height="400" fill="#0c1827"/>
+            <rect width="720" height="400" fill="url(#blocks)"/>
+            
+            <!-- Road Base Lines -->
+            <g stroke="#34465e" stroke-width="26" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M30 100H690M30 300H690M140 20V380M360 20V380M580 20V380M140 200H580"/>
+            </g>
+            <!-- Road Dashed Centerlines -->
+            <g stroke="#677b94" stroke-width="1.5" stroke-dasharray="7 7" fill="none">
+              <path d="M30 100H690M30 300H690M140 20V380M360 20V380M580 20V380M140 200H580"/>
+            </g>
+            
+            <!-- Road Name Tags -->
+            <g fill="#4e6584" font-size="9" font-weight="700" letter-spacing="0.5">
+              <text x="215" y="93">MAIN BAZAAR RD (2.2km)</text>
+              <text x="435" y="93">HOSPITAL RD (2.2km)</text>
+              <text x="215" y="293">SOUTH RING RD (2.2km)</text>
+              <text x="435" y="293">RING RD BYPASS (4.2km)</text>
+              <text x="146" y="200" transform="rotate(90 146,200)">STATION LINK (2.0km)</text>
+              <text x="366" y="200" transform="rotate(90 366,200)">CENTRAL AVE (2.0km)</text>
+              <text x="586" y="200" transform="rotate(90 586,200)">EAST BYPASS LINK</text>
+            </g>
+
+            <!-- Route Paths Rendering Layers -->
+            <g id="altRouteLayer"></g>
+            <g id="routeLayer"></g>
+
+            <!-- Junction Markers & Names -->
+            <g fill="#e7f0ff" font-size="11" font-weight="700">
+              <text x="153" y="82">J1 • CENTRAL</text>
+              <text x="373" y="82">J2 • MALL RD</text>
+              <text x="593" y="82">J3 • HOSPITAL</text>
+              <text x="153" y="282">J4 • STATION</text>
+              <text x="373" y="282">J5 • RING RD</text>
+              <!-- East Bypass Corner Waypoint -->
+              <circle cx="580" cy="300" r="4" fill="#39516f"/>
+              <text x="593" y="305" fill="#758ea8" font-size="10">EAST BYPASS</text>
+            </g>
+
+            <!-- Dynamic Signal States -->
+            <g id="mapSignals"></g>
+          </svg>
+
+          <!-- Map Legend -->
+          <div class="legend">
+            <span><i style="background:#31d0a0"></i>Green Light</span>
+            <span><i style="background:#ff647c"></i>Red Light</span>
+            <span><i style="background:#ff8a24"></i>⚡ Dijkstra Best Time Route</span>
+            <span><i style="background:#ff4d6d;border-top:2px dashed #ff99aa"></i>⚠ Congested Corridor (Avoided)</span>
+          </div>
+        </div>
+
+        <!-- Route Narrative Notice -->
+        <div class="notice success" id="routeNotice">
+          Dijkstra algorithm evaluates dynamic edge weights based on queue count, traffic density, and signal wait times.
+        </div>
+      </div>
+
+      <!-- Vehicle Registry & Blacklist -->
+      <div class="panel">
+        <div class="ph">
+          <div class="pt"><span>▣</span> ANPR Vehicle Registry & Security Blacklist</div>
+          <span class="tag">Security Watchlist</span>
+        </div>
+        <div class="vehicleform">
+          <div class="field">
+            <label>Registration Plate Number</label>
+            <input id="plate" placeholder="HR26AB1234" maxlength="15">
+          </div>
+          <div class="field">
+            <label>Flag Reason / Incident Note</label>
+            <input id="reason" placeholder="e.g. access denied / stolen report">
+          </div>
+          <div class="field">
+            <label>Vehicle Type</label>
+            <select id="vtype">
+              <option>Car</option>
+              <option>Truck</option>
+              <option>Motorcycle</option>
+              <option>Bus</option>
+              <option>Taxi</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Status Classification</label>
+            <select id="vaction">
+              <option value="blacklist">Blacklist vehicle</option>
+              <option value="allow">Mark allowed</option>
+            </select>
+          </div>
+          <button class="primary full" onclick="addVehicle()">Save Vehicle Record</button>
+        </div>
+        <div class="tablewrap" style="margin-top:12px">
+          <table>
+            <thead>
+              <tr><th>Registration</th><th>Type</th><th>Status</th><th>Note</th><th>Action</th></tr>
+            </thead>
+            <tbody id="vehicles"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT COLUMN -->
+    <section>
+      <!-- Dijkstra Route Optimizer & Priority Dispatch -->
+      <div class="panel">
+        <div class="ph">
+          <div class="pt"><span>⚡</span> Dijkstra Route Optimizer & Emergency Dispatch</div>
+          <span class="tag active-tag" id="algoTag">DIJKSTRA ACTIVE</span>
+        </div>
+
+        <div class="emform">
+          <div class="field">
+            <label>Vehicle ID / Plate</label>
+            <input id="emPlate" value="HR26-AMB-001">
+          </div>
+          <div class="field">
+            <label>Vehicle Classification</label>
+            <select id="emType">
+              <option>Ambulance</option>
+              <option>Fire engine</option>
+              <option>Police Patrol</option>
+              <option>Critical Logistics</option>
+            </select>
+          </div>
+          <!-- Quick Scenario Presets -->
+          <div class="field full">
+            <label>⚡ Quick Route Scenarios (Demonstrates Dijkstra Time-Saving)</label>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <button type="button" class="small" onclick="loadScenario('J4','J2')">⚡ Station ➔ Mall Rd (Saves 4.5m)</button>
+              <button type="button" class="small" onclick="loadScenario('J4','J3')">⚡ Station ➔ Hospital (Saves 6.3m)</button>
+              <button type="button" class="small" onclick="loadScenario('J1','J3')">⚡ Central ➔ Hospital</button>
+              <button type="button" class="small" onclick="loadScenario('J1','J5')">⚡ Central ➔ Ring Rd</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Origin Junction (Start)</label>
+            <select id="emStart" onchange="runDijkstra()">
+              <option value="J1">J1 — Central Junction</option>
+              <option value="J2">J2 — Mall Road</option>
+              <option value="J3">J3 — Hospital</option>
+              <option value="J4" selected>J4 — Railway Station</option>
+              <option value="J5">J5 — Ring Road</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Destination Junction (End)</label>
+            <select id="emEnd" onchange="runDijkstra()">
+              <option value="J2" selected>J2 — Mall Road</option>
+              <option value="J3">J3 — Hospital</option>
+              <option value="J1">J1 — Central Junction</option>
+              <option value="J4">J4 — Railway Station</option>
+              <option value="J5">J5 — Ring Road</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Routing Algorithm Criterion</label>
+            <select id="routeCriterion" onchange="runDijkstra()">
+              <option value="time">⚡ Dijkstra (Fastest - Least Travel Time)</option>
+              <option value="distance">📏 Dijkstra (Shortest Physical Distance)</option>
+              <option value="hops">🔄 Static BFS (Fewest Intersections)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Signal Priority (Preemption)</label>
+            <select id="routeMode" onchange="runDijkstra()">
+              <option value="priority">Priority Green-Wave (Preempt signals)</option>
+              <option value="routeonly">Standard Traffic (Respect signals)</option>
+            </select>
+          </div>
+          
+          <button class="orange full" onclick="activateEmergency()">🚀 Dispatch & Activate Priority Route →</button>
+          <button class="accent-btn full" onclick="runDijkstra(true)">⚡ Recalculate Dijkstra Best Route</button>
+          <button class="danger full" onclick="clearEmergency()">Clear Active Route</button>
+        </div>
+
+        <!-- Live Dijkstra Route Analysis Box -->
+        <div class="dijkstra-card" id="dijkstraCard">
+          <div class="dijkstra-head">
+            <span class="best-route-title">Dijkstra Best Route Recommendation</span>
+            <span class="best-route-badge" id="algoPill">⚡ OPTIMAL PATH</span>
+          </div>
+
+          <div class="route-sequence" id="routeSequenceBox">
+            <span>J4</span><span class="arrow">➔</span><span>J5</span><span class="arrow">➔</span><span>J2</span>
+          </div>
+
+          <!-- Metrics Row -->
+          <div class="metric-row">
+            <div class="metric-box">
+              <div class="m-label">Est. Travel Time</div>
+              <div class="m-val" id="resTravelTime" style="color:var(--green)">-- min</div>
+            </div>
+            <div class="metric-box">
+              <div class="m-label">Route Distance</div>
+              <div class="m-val" id="resDistance">-- km</div>
+            </div>
+            <div class="metric-box">
+              <div class="m-label">Avg Corridor Speed</div>
+              <div class="m-val" id="resAvgSpeed">-- km/h</div>
+            </div>
+          </div>
+
+          <!-- Time Saved Callout -->
+          <div class="time-saved-callout" id="timeSavedBanner">
+            <div>
+              <div class="saved-text" id="timeSavedDesc">Time saved vs congested alternate:</div>
+              <div class="saved-bold" id="timeSavedAmount">⚡ -- min faster</div>
+            </div>
+            <div style="font-size:24px">⏱️</div>
+          </div>
+
+          <!-- Candidate Paths Comparison Table -->
+          <div style="margin-top:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase">Candidate Paths Evaluated by Dijkstra</span>
+              <button class="toggle-btn" onclick="toggleDetails()">Toggle Segment Details</button>
+            </div>
+            <table class="paths-table">
+              <thead>
+                <tr><th>Path Sequence</th><th>Distance</th><th>Travel Time</th><th>Verdict</th></tr>
+              </thead>
+              <tbody id="candidatePathsBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Turn-by-Turn Segment Table (Expandable) -->
+          <div id="segmentDetailsWrap" style="display:none;margin-top:12px;border-top:1px solid var(--line);padding-top:10px">
+            <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">Turn-By-Turn Corridor Breakdown:</div>
+            <table class="paths-table">
+              <thead>
+                <tr><th>Leg</th><th>Road Corridor</th><th>Distance</th><th>Density & Phase</th><th>Leg Time</th></tr>
+              </thead>
+              <tbody id="segmentsBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Algorithm Formula Pill -->
+          <div class="formula-pill">
+            <b>Dijkstra Cost Function:</b><br>
+            <code>Weight = (Base Distance / Speed) × [1 + 2.2 × (Density / 100)²] + Signal Delay</code>
+          </div>
+        </div>
+
+        <div class="notice success" id="emStatus" style="margin-top:12px">
+          Dijkstra route ready. Choose Start & Destination to calculate the best time-saving path.
+        </div>
+      </div>
+
+      <!-- System Alerts -->
+      <div class="panel">
+        <div class="ph">
+          <div class="pt"><span>⚠</span> Real-Time System Alerts</div>
+          <button class="small" onclick="clearAlerts()">Clear Alerts</button>
+        </div>
+        <div id="alerts" class="empty">No alerts yet.</div>
+      </div>
+
+      <!-- Activity Log -->
+      <div class="panel">
+        <div class="ph">
+          <div class="pt"><span>◷</span> Operations & Algorithm Log</div>
+          <span class="tag">Session Trace</span>
+        </div>
+        <div id="activity" class="empty">Actions appear here.</div>
+      </div>
+
+      <!-- Prototype Limits & Academic Notes -->
+      <div class="panel">
+        <div class="pt">Algorithm Implementation Notes</div>
+        <p class="muted" style="font-size:12px;line-height:1.5;margin-top:8px">
+          <b>Dijkstra's Algorithm Implementation:</b> Computes the globally optimal minimum-cost path over a dynamic directed graph. Edge weights are not static distances, but real-time travel times derived from free-flow speeds, queuing volume, congestion density, and intersection signal delays. Real deployment connects to SCATS/SCOOT controllers, inductive loop detectors, and ANPR cameras.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <div class="foot">NETRA Traffic Command • Intelligent Transportation Systems • Dijkstra Dynamic Routing Prototype</div>
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-const js=[{id:'J1',name:'Central Junction',road:'Main Bazaar Rd',count:62,density:78,phase:'RED',green:35},{id:'J2',name:'Mall Road Crossing',road:'Mall Road',count:48,density:61,phase:'GREEN',green:40},{id:'J3',name:'Hospital Junction',road:'Civil Hospital Rd',count:31,density:42,phase:'RED',green:30},{id:'J4',name:'Railway Station',road:'Station Road',count:57,density:72,phase:'YELLOW',green:35},{id:'J5',name:'Ring Road Crossing',road:'Ring Road',count:50,density:55,phase:'GREEN',green:45}];
-let vehicles=[{plate:'HR26CD4581',type:'Car',status:'BLACKLISTED',note:'Demo: access denied'},{plate:'HR39FQ2201',type:'Truck',status:'BLACKLISTED',note:'Demo: verification hold'},{plate:'HR20AB7788',type:'Car',status:'ALLOWED',note:'Verified demo record'}],emergency=null,alerts=[],logs=[];
-const pos={J1:[140,100],J2:[360,100],J3:[580,100],J4:[140,300],J5:[360,300]};
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function toast(s){let e=document.getElementById('toast');e.textContent=s;e.className='toast show';setTimeout(()=>e.className='toast',2200)}
-function log(s){logs.unshift(new Date().toLocaleTimeString()+' · '+s);logs=logs.slice(0,7);document.getElementById('activity').innerHTML=logs.map(x=>'<div style="padding:8px 0;border-bottom:1px solid var(--line)">'+esc(x)+'</div>').join('')}
-function alertMsg(s){alerts.unshift(new Date().toLocaleTimeString()+' · '+s);alerts=alerts.slice(0,6);document.getElementById('alerts').innerHTML=alerts.map(x=>'<div style="padding:9px 0;border-bottom:1px solid var(--line)">⚠ &nbsp;'+esc(x)+'</div>').join('')}
-function render(){document.getElementById('signals').innerHTML=js.map(j=>`<div class="signal"><div class="sighead"><div><b>${j.name}</b><div class="sigid">${j.id} · ${j.road}</div></div><div class="light"><i class="bulb red ${j.phase==='RED'?'on':''}"></i><i class="bulb yellow ${j.phase==='YELLOW'?'on':''}"></i><i class="bulb green ${j.phase==='GREEN'?'on':''}"></i></div></div><div class="density"><span>Traffic density</span><b>${j.density}%</b></div><div class="bar"><span style="width:${j.density}%"></span></div><div class="fields"><div class="field"><label>Vehicles counted</label><input type="number" min="0" max="999" value="${j.count}" onchange="countSet('${j.id}',this.value)"></div><div class="field"><label>Green time (sec)</label><input type="number" min="5" max="180" value="${j.green}" onchange="greenSet('${j.id}',this.value)"></div></div><div class="actions"><button class="small" onclick="phase('${j.id}','GREEN')">Green</button><button class="small" onclick="phase('${j.id}','YELLOW')">Yellow</button><button class="small danger" onclick="phase('${j.id}','RED')">Red</button><button class="small" onclick="auto('${j.id}')">Auto density</button></div></div>`).join('');renderMap();renderVehicles();stats()}
-function phase(id,p){js.find(j=>j.id===id).phase=p;render();log(id+' set to '+p);alertMsg(id+' signal changed to '+p);toast(id+': '+p)}
-function countSet(id,v){let j=js.find(x=>x.id===id);j.count=Math.max(0,Number(v)||0);j.density=Math.min(100,Math.round(j.count/80*100));render();log(id+' vehicle count updated')}
-function greenSet(id,v){js.find(x=>x.id===id).green=Math.max(5,Math.min(180,Number(v)||5));render();log(id+' green duration updated')}
-function auto(id){let j=js.find(x=>x.id===id);j.green=Math.max(15,Math.min(90,Math.round(15+j.density*.65)));j.phase=j.density>35?'GREEN':'YELLOW';render();log(id+' adaptive timing: '+j.green+' seconds');toast('Adaptive timing updated')}
-function path(a,b){if(a===b)return[a];let g={J1:['J2','J4'],J2:['J1','J3','J5'],J3:['J2'],J4:['J1','J5'],J5:['J4','J2']},q=[[a]],seen=new Set([a]);while(q.length){let p=q.shift(),n=p[p.length-1];if(n===b)return p;for(let x of g[n]||[])if(!seen.has(x)){seen.add(x);q.push([...p,x])}}return[a,b]}
-function renderMap(){document.getElementById('mapSignals').innerHTML=js.map(j=>{let [x,y]=pos[j.id],c=j.phase==='GREEN'?'#31d0a0':j.phase==='RED'?'#ff647c':'#ffb547';return `<circle cx="${x}" cy="${y}" r="12" fill="#08111d" stroke="${c}" stroke-width="4"/><circle cx="${x}" cy="${y}" r="4" fill="${c}"/>`}).join('');let layer=document.getElementById('routeLayer');if(!emergency){layer.innerHTML='';return}let p=emergency.route,pts=p.map(k=>pos[k].join(',')).join(' ');layer.innerHTML=`<polyline points="${pts}" fill="none" stroke="#ff8a24" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" opacity=".28"/><polyline points="${pts}" fill="none" stroke="#ff8a24" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="10 7"><animate attributeName="stroke-dashoffset" from="0" to="-34" dur="1s" repeatCount="indefinite"/></polyline>`+p.map((k,i)=>{let [x,y]=pos[k];return `<circle cx="${x}" cy="${y}" r="8" fill="#ff8a24" stroke="#fff1df" stroke-width="2"/><text x="${x+13}" y="${y-13}" fill="#ffc18a" font-size="11" font-weight="bold">${i===0?'START':i===p.length-1?'DEST':'P'+i}</text>`}).join('')}
-function activateEmergency(){let start=document.getElementById('emStart').value,end=document.getElementById('emEnd').value,plate=document.getElementById('emPlate').value.trim();if(!plate){toast('Enter emergency vehicle ID');return}if(start===end){toast('Select different start and destination');return}emergency={plate,type:document.getElementById('emType').value,start,end,route:path(start,end)};if(document.getElementById('routeMode').value==='priority')emergency.route.forEach(id=>js.find(j=>j.id===id).phase='GREEN');render();document.getElementById('rstatus').textContent=emergency.route.length+' junctions · ACTIVE';document.getElementById('routeNotice').textContent=`Orange priority route: ${plate} (${emergency.type}) · ${start} → ${end} · ${emergency.route.length} junction(s).`;document.getElementById('routeNotice').className='notice success';document.getElementById('emStatus').textContent='ACTIVE: '+plate+' routed '+start+' → '+end+'. Orange route highlighted; '+(document.getElementById('routeMode').value==='priority'?'green-wave simulation applied.':'signal phases unchanged.');document.getElementById('emcount').textContent='1';log('Emergency route activated: '+plate+' '+start+' → '+end);alertMsg('Emergency '+emergency.type+' '+plate+' route updated');toast('Orange emergency route activated')}
-function clearEmergency(){emergency=null;renderMap();document.getElementById('rstatus').textContent='No emergency route';document.getElementById('routeNotice').textContent='Emergency routing is idle. Choose a vehicle and route to draw the priority path in orange.';document.getElementById('routeNotice').className='notice';document.getElementById('emStatus').textContent='No active emergency vehicle. Signal priority is simulated.';document.getElementById('emcount').textContent='0';log('Emergency route cleared');toast('Route cleared')}
-function addVehicle(){let plate=document.getElementById('plate').value.trim().toUpperCase().replace(/\s+/g,'');if(!plate){toast('Enter registration number');return}let status=document.getElementById('vaction').value==='blacklist'?'BLACKLISTED':'ALLOWED',type=document.getElementById('vtype').value,note=document.getElementById('reason').value.trim()||'No note',v=vehicles.find(x=>x.plate===plate);if(v){Object.assign(v,{status,type,note})}else vehicles.unshift({plate,status,type,note});renderVehicles();stats();log(plate+' marked '+status);alertMsg(plate+' marked '+status);document.getElementById('plate').value='';document.getElementById('reason').value='';toast('Vehicle status saved')}
-function toggleVehicle(plate){let v=vehicles.find(x=>x.plate===plate);v.status=v.status==='BLACKLISTED'?'ALLOWED':'BLACKLISTED';renderVehicles();stats();log(plate+' marked '+v.status);alertMsg(plate+' is now '+v.status)}
-function renderVehicles(){document.getElementById('vehicles').innerHTML=vehicles.map(v=>`<tr><td><b>${esc(v.plate)}</b></td><td>${esc(v.type)}</td><td><span class="status ${v.status==='BLACKLISTED'?'st-red':'st-green'}">${v.status}</span></td><td>${esc(v.note)}</td><td><button class="small" onclick="toggleVehicle('${esc(v.plate)}')">${v.status==='BLACKLISTED'?'Allow':'Blacklist'}</button></td></tr>`).join('')}
-function stats(){document.getElementById('total').textContent=js.reduce((a,j)=>a+j.count,0);document.getElementById('blcount').textContent=vehicles.filter(v=>v.status==='BLACKLISTED').length;document.getElementById('emcount').textContent=emergency?1:0}
-function clearAlerts(){alerts=[];document.getElementById('alerts').innerHTML='No alerts yet.'}
-function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString()}setInterval(tick,1000);tick();render();alertMsg('Demo initialized. Traffic data is simulated.');
-</script></body></html>
+// ==========================================
+// 1. DATA MODEL & GRAPH DEFINITION
+// ==========================================
+const js = [
+  { id: 'J1', name: 'Central Junction', road: 'Main Bazaar Rd', count: 62, density: 78, phase: 'RED', green: 35 },
+  { id: 'J2', name: 'Mall Road Crossing', road: 'Mall Road', count: 48, density: 61, phase: 'GREEN', green: 40 },
+  { id: 'J3', name: 'Hospital Junction', road: 'Civil Hospital Rd', count: 31, density: 42, phase: 'RED', green: 30 },
+  { id: 'J4', name: 'Railway Station', road: 'Station Road', count: 57, density: 72, phase: 'YELLOW', green: 35 },
+  { id: 'J5', name: 'Ring Road Crossing', road: 'Ring Road', count: 50, density: 55, phase: 'GREEN', green: 45 }
+];
+
+let vehicles = [
+  { plate: 'HR26CD4581', type: 'Car', status: 'BLACKLISTED', note: 'Demo: access denied' },
+  { plate: 'HR39FQ2201', type: 'Truck', status: 'BLACKLISTED', note: 'Demo: verification hold' },
+  { plate: 'HR20AB7788', type: 'Car', status: 'ALLOWED', note: 'Verified demo record' }
+];
+
+let emergency = null;
+let currentDijkstraResult = null;
+let alerts = [];
+let logs = [];
+
+// Coordinates for junction visualization on 720x400 SVG
+const pos = {
+  J1: [140, 100],
+  J2: [360, 100],
+  J3: [580, 100],
+  J4: [140, 300],
+  J5: [360, 300]
+};
+
+// Road Network Graph Edges with physical distance, design speed, and geometric waypoints
+const roadEdges = [
+  { u: 'J1', v: 'J2', road: 'Main Bazaar - Mall Rd', distKm: 2.2, speedKmh: 45 },
+  { u: 'J2', v: 'J3', road: 'Civil Hospital Road', distKm: 2.2, speedKmh: 40 },
+  { u: 'J1', v: 'J4', road: 'Station Link Road', distKm: 2.0, speedKmh: 40 },
+  { u: 'J4', v: 'J5', road: 'South Ring Road', distKm: 2.2, speedKmh: 50 },
+  { u: 'J2', v: 'J5', road: 'Central Avenue Cross Link', distKm: 2.0, speedKmh: 40 },
+  // East Bypass: connects J5 (360, 300) to J3 (580, 100) via corner waypoint (580, 300)
+  { u: 'J5', v: 'J3', road: 'East Ring Road Bypass', distKm: 4.2, speedKmh: 65, waypoints: [[580, 300]] }
+];
+
+// Helper: Get bidirectional outgoing edges from a junction
+function getEdgesFrom(u) {
+  const res = [];
+  for (const e of roadEdges) {
+    if (e.u === u) {
+      res.push({
+        to: e.v,
+        road: e.road,
+        distKm: e.distKm,
+        speedKmh: e.speedKmh,
+        waypoints: e.waypoints ? [...e.waypoints] : []
+      });
+    } else if (e.v === u) {
+      res.push({
+        to: e.u,
+        road: e.road,
+        distKm: e.distKm,
+        speedKmh: e.speedKmh,
+        waypoints: e.waypoints ? [...e.waypoints].reverse() : []
+      });
+    }
+  }
+  return res;
+}
+
+// ==========================================
+// 2. DIJKSTRA ALGORITHM & COST FUNCTIONS
+// ==========================================
+
+// Calculate dynamic metrics for a corridor segment (u -> v)
+function calculateSegmentMetrics(fromId, toId, distKm, speedKmh, criterion = 'time', isPriority = false) {
+  const targetJunction = js.find(j => j.id === toId);
+  const density = targetJunction ? targetJunction.density : 50;
+  const count = targetJunction ? targetJunction.count : 40;
+  const phase = targetJunction ? targetJunction.phase : 'GREEN';
+  const greenSec = targetJunction ? targetJunction.green : 35;
+
+  // 1. Free-flow base travel time in minutes: (distance / speed) * 60
+  const baseTimeMin = (distKm / Math.max(15, speedKmh)) * 60;
+
+  // 2. Congestion multiplier based on density & queue volume (BPR function adaptation)
+  const dRatio = density / 100;
+  const congestionFactor = 1.0 + (Math.pow(dRatio, 1.8) * 2.2) + (count > 60 ? 0.35 : 0);
+  const roadTravelTimeMin = baseTimeMin * congestionFactor;
+
+  // 3. Signal delay at target intersection
+  let signalDelayMin = 0;
+  if (isPriority) {
+    // Green-wave preemption eliminates signal stopping delay
+    signalDelayMin = 0.1;
+  } else {
+    if (phase === 'GREEN') {
+      signalDelayMin = 0.15; // Minor deceleration/turning delay
+    } else if (phase === 'YELLOW') {
+      signalDelayMin = 0.45; // Caution deceleration (~27s)
+    } else {
+      // Red light wait time proportional to cycle
+      const redCycleSec = Math.max(25, 100 - greenSec);
+      signalDelayMin = (redCycleSec / 60) * 1.15; // ~0.9 to 1.5 min wait
+    }
+  }
+
+  const totalSegmentTimeMin = roadTravelTimeMin + signalDelayMin;
+
+  // Edge cost for Dijkstra depends on selected criterion
+  let weight = totalSegmentTimeMin;
+  if (criterion === 'distance') {
+    weight = distKm;
+  } else if (criterion === 'hops') {
+    weight = 1.0;
+  }
+
+  return {
+    weight,
+    baseTimeMin: Math.round(baseTimeMin * 10) / 10,
+    congestionFactor: Math.round(congestionFactor * 100) / 100,
+    roadTravelTimeMin: Math.round(roadTravelTimeMin * 10) / 10,
+    signalDelayMin: Math.round(signalDelayMin * 10) / 10,
+    totalSegmentTimeMin: Math.round(totalSegmentTimeMin * 10) / 10,
+    density,
+    count,
+    phase
+  };
+}
+
+// Pure Dijkstra's Algorithm Implementation
+function dijkstra(startId, endId, criterion = 'time', isPriority = false) {
+  if (startId === endId) {
+    return { path: [startId], totalTimeMin: 0, totalDistKm: 0, segments: [], visitedOrder: [startId] };
+  }
+
+  const nodeIds = js.map(j => j.id);
+  const dist = {};
+  const prev = {};
+  const unvisited = new Set(nodeIds);
+  const visitedOrder = [];
+
+  for (const id of nodeIds) {
+    dist[id] = Infinity;
+    prev[id] = null;
+  }
+  dist[startId] = 0;
+
+  while (unvisited.size > 0) {
+    // Extract-Min: Find unvisited node with lowest tentative cost
+    let curr = null;
+    let minCost = Infinity;
+    for (const id of unvisited) {
+      if (dist[id] < minCost) {
+        minCost = dist[id];
+        curr = id;
+      }
+    }
+
+    if (!curr || minCost === Infinity) break;
+    unvisited.delete(curr);
+    visitedOrder.push(curr);
+
+    if (curr === endId) break;
+
+    // Relax all outgoing edges from current node
+    const edges = getEdgesFrom(curr);
+    for (const edge of edges) {
+      const neighbor = edge.to;
+      if (!unvisited.has(neighbor)) continue;
+
+      const metrics = calculateSegmentMetrics(curr, neighbor, edge.distKm, edge.speedKmh, criterion, isPriority);
+      const newCost = dist[curr] + metrics.weight;
+
+      if (newCost < dist[neighbor]) {
+        dist[neighbor] = newCost;
+        prev[neighbor] = curr;
+      }
+    }
+  }
+
+  // Reconstruct shortest path from destination back to start
+  const path = [];
+  let step = endId;
+  while (step) {
+    path.unshift(step);
+    step = prev[step];
+  }
+
+  if (path[0] !== startId) {
+    return { path: [startId, endId], totalTimeMin: 99, totalDistKm: 99, segments: [], visitedOrder };
+  }
+
+  // Gather segment details and aggregate totals
+  const segments = [];
+  let totalDistKm = 0;
+  let totalTimeMin = 0;
+
+  for (let i = 0; i < path.length - 1; i++) {
+    const u = path[i];
+    const v = path[i + 1];
+    const edge = getEdgesFrom(u).find(e => e.to === v);
+    const metrics = calculateSegmentMetrics(u, v, edge.distKm, edge.speedKmh, criterion, isPriority);
+    totalDistKm += edge.distKm;
+    totalTimeMin += metrics.totalSegmentTimeMin;
+    segments.push({
+      from: u,
+      to: v,
+      road: edge.road,
+      distKm: edge.distKm,
+      waypoints: edge.waypoints,
+      ...metrics
+    });
+  }
+
+  return {
+    path,
+    totalTimeMin: Math.round(totalTimeMin * 10) / 10,
+    totalDistKm: Math.round(totalDistKm * 10) / 10,
+    segments,
+    visitedOrder
+  };
+}
+
+// Find and evaluate all candidate simple paths between start and end for comparative analysis
+function evaluateAllCandidatePaths(startId, endId, criterion = 'time', isPriority = false) {
+  const allSimplePaths = [];
+  function dfs(curr, curPath, visited) {
+    if (curr === endId) {
+      allSimplePaths.push([...curPath]);
+      return;
+    }
+    const edges = getEdgesFrom(curr);
+    for (const e of edges) {
+      if (!visited.has(e.to)) {
+        visited.add(e.to);
+        curPath.push(e.to);
+        dfs(e.to, curPath, visited);
+        curPath.pop();
+        visited.delete(e.to);
+      }
+    }
+  }
+  dfs(startId, [startId], new Set([startId]));
+
+  const evaluated = allSimplePaths.map(p => {
+    let distKm = 0;
+    let timeMin = 0;
+    const segs = [];
+    for (let i = 0; i < p.length - 1; i++) {
+      const u = p[i];
+      const v = p[i + 1];
+      const edge = getEdgesFrom(u).find(e => e.to === v);
+      const m = calculateSegmentMetrics(u, v, edge.distKm, edge.speedKmh, criterion, isPriority);
+      distKm += edge.distKm;
+      timeMin += m.totalSegmentTimeMin;
+      segs.push({ from: u, to: v, road: edge.road, distKm: edge.distKm, ...m });
+    }
+    return {
+      path: p,
+      totalDistKm: Math.round(distKm * 10) / 10,
+      totalTimeMin: Math.round(timeMin * 10) / 10,
+      segments: segs
+    };
+  });
+
+  // Sort paths primarily by travel time
+  evaluated.sort((a, b) => a.totalTimeMin - b.totalTimeMin);
+  return evaluated;
+}
+
+// ==========================================
+// 3. UI RENDERING & DIJKSTRA INTEGRATION
+// ==========================================
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function toast(s) {
+  const e = document.getElementById('toast');
+  e.textContent = s;
+  e.className = 'toast show';
+  setTimeout(() => e.className = 'toast', 2400);
+}
+
+function log(s) {
+  logs.unshift(new Date().toLocaleTimeString() + ' · ' + s);
+  logs = logs.slice(0, 8);
+  document.getElementById('activity').innerHTML = logs.map(x =>
+    '<div style="padding:7px 0;border-bottom:1px solid var(--line);font-size:12px">' + esc(x) + '</div>'
+  ).join('');
+}
+
+function alertMsg(s) {
+  alerts.unshift(new Date().toLocaleTimeString() + ' · ' + s);
+  alerts = alerts.slice(0, 6);
+  document.getElementById('alerts').innerHTML = alerts.map(x =>
+    '<div style="padding:8px 0;border-bottom:1px solid var(--line);font-size:12px;color:#fca5a5">⚠ &nbsp;' + esc(x) + '</div>'
+  ).join('');
+}
+
+function clearAlerts() {
+  alerts = [];
+  document.getElementById('alerts').innerHTML = '<div class="empty">No alerts yet.</div>';
+}
+
+function loadScenario(start, end) {
+  document.getElementById('emStart').value = start;
+  document.getElementById('emEnd').value = end;
+  runDijkstra(true);
+}
+
+// Run Dijkstra and update cards, comparison table, and map
+function runDijkstra(showToastNotice = false) {
+  const start = document.getElementById('emStart').value;
+  const end = document.getElementById('emEnd').value;
+  const criterion = document.getElementById('routeCriterion').value;
+  const isPriority = document.getElementById('routeMode').value === 'priority' && !!emergency;
+
+  if (start === end) {
+    document.getElementById('routeSequenceBox').innerHTML = `<span style="color:var(--yellow)">Start and Destination are the same junction (${start})</span>`;
+    document.getElementById('resTravelTime').textContent = '0.0 min';
+    document.getElementById('resDistance').textContent = '0.0 km';
+    document.getElementById('resAvgSpeed').textContent = '0 km/h';
+    document.getElementById('timeSavedAmount').textContent = '0.0 min';
+    document.getElementById('statBestTime').textContent = '0 min';
+    document.getElementById('statTimeSaved').textContent = '0 min';
+    document.getElementById('candidatePathsBody').innerHTML = '<tr><td colspan="4" class="empty">Same junction selected.</td></tr>';
+    document.getElementById('segmentsBody').innerHTML = '<tr><td colspan="5" class="empty">No travel required.</td></tr>';
+    renderMap();
+    return;
+  }
+
+  // 1. Run Dijkstra Algorithm
+  const dijkstraResult = dijkstra(start, end, criterion, isPriority);
+  currentDijkstraResult = dijkstraResult;
+
+  // 2. Evaluate all candidate paths for comparison
+  const candidatePaths = evaluateAllCandidatePaths(start, end, criterion, isPriority);
+
+  // 3. Compute Time Saved vs alternative congested route
+  let alternatePath = null;
+  let timeSavedMin = 0;
+  let timeSavedPercent = 0;
+
+  if (candidatePaths.length > 1) {
+    // Find the next viable alternate route
+    alternatePath = candidatePaths.find(p => p.path.join('-') !== dijkstraResult.path.join('-')) || candidatePaths[1];
+    if (alternatePath) {
+      timeSavedMin = Math.max(0, Math.round((alternatePath.totalTimeMin - dijkstraResult.totalTimeMin) * 10) / 10);
+      timeSavedPercent = Math.round((timeSavedMin / Math.max(0.1, alternatePath.totalTimeMin)) * 100);
+    }
+  }
+
+  // Calculate corridor average speed
+  const avgSpeed = dijkstraResult.totalTimeMin > 0
+    ? Math.round((dijkstraResult.totalDistKm / (dijkstraResult.totalTimeMin / 60)))
+    : 0;
+
+  // 4. Update Dijkstra Result Card
+  const pathNodes = dijkstraResult.path;
+  const seqHtml = pathNodes.map((id, i) => {
+    const isStart = i === 0;
+    const isEnd = i === pathNodes.length - 1;
+    const color = isStart ? 'var(--yellow)' : isEnd ? 'var(--green)' : '#9ecbff';
+    return `<span style="color:${color};font-weight:800">${id}</span>` + (isEnd ? '' : '<span class="arrow">➔</span>');
+  }).join('');
+  document.getElementById('routeSequenceBox').innerHTML = seqHtml;
+
+  document.getElementById('resTravelTime').textContent = dijkstraResult.totalTimeMin + ' min';
+  document.getElementById('resDistance').textContent = dijkstraResult.totalDistKm + ' km';
+  document.getElementById('resAvgSpeed').textContent = avgSpeed + ' km/h';
+
+  // Stats in top bar
+  document.getElementById('statBestTime').textContent = dijkstraResult.totalTimeMin + ' min';
+  document.getElementById('statBestRoute').textContent = `${start} ➔ ${end} (${dijkstraResult.totalDistKm} km)`;
+
+  if (timeSavedMin > 0) {
+    document.getElementById('statTimeSaved').textContent = `⚡ ${timeSavedMin} min`;
+    document.getElementById('statTimeSavedFoot').textContent = `${timeSavedPercent}% faster path`;
+    document.getElementById('timeSavedAmount').innerHTML = `⚡ ${timeSavedMin} min faster (${timeSavedPercent}% saved)`;
+    document.getElementById('timeSavedDesc').textContent = `Time saved vs alternate corridor (${alternatePath.path.join('➔')}):`;
+  } else {
+    document.getElementById('statTimeSaved').textContent = `Optimal`;
+    document.getElementById('statTimeSavedFoot').textContent = `Fastest viable route`;
+    document.getElementById('timeSavedAmount').innerHTML = `★ Optimal Route`;
+    document.getElementById('timeSavedDesc').textContent = `Direct single-path corridor:`;
+  }
+
+  // 5. Render Candidate Paths Comparison Table
+  document.getElementById('candidatePathsBody').innerHTML = candidatePaths.map((cp, idx) => {
+    const isOptimal = cp.path.join('-') === dijkstraResult.path.join('-');
+    const diff = Math.round((cp.totalTimeMin - dijkstraResult.totalTimeMin) * 10) / 10;
+    const verdict = isOptimal
+      ? '<span class="badge-optimal">★ OPTIMAL (Dijkstra)</span>'
+      : `<span class="badge-slower">+${diff}m slower</span>`;
+
+    return `<tr class="${isOptimal ? 'optimal-row' : ''}">
+      <td><b>${cp.path.join(' ➔ ')}</b></td>
+      <td>${cp.totalDistKm} km</td>
+      <td><b>${cp.totalTimeMin} min</b></td>
+      <td>${verdict}</td>
+    </tr>`;
+  }).join('');
+
+  // 6. Render Turn-by-Turn Breakdown Table
+  document.getElementById('segmentsBody').innerHTML = dijkstraResult.segments.map(seg => {
+    const lightPill = seg.phase === 'GREEN'
+      ? '<span style="color:var(--green)">● GRN</span>'
+      : seg.phase === 'YELLOW'
+      ? '<span style="color:var(--yellow)">● YEL</span>'
+      : '<span style="color:var(--red)">● RED</span>';
+    return `<tr>
+      <td><b>${seg.from} ➔ ${seg.to}</b></td>
+      <td>${esc(seg.road)}</td>
+      <td>${seg.distKm} km</td>
+      <td>${seg.density}% ${lightPill}</td>
+      <td><b>${seg.totalSegmentTimeMin} min</b></td>
+    </tr>`;
+  }).join('');
+
+  // 7. Update Map Narrative Notice
+  const avoidedNote = alternatePath && timeSavedMin > 0
+    ? ` Bypassed slower path via <b>${alternatePath.path.join('➔')}</b>, saving <b>${timeSavedMin} minutes</b>.`
+    : '';
+  document.getElementById('routeNotice').innerHTML =
+    `<b>Dijkstra Route Selected:</b> <b>${dijkstraResult.path.join(' ➔ ')}</b> (${dijkstraResult.totalDistKm} km, estimated <b>${dijkstraResult.totalTimeMin} min</b>).${avoidedNote}`;
+  document.getElementById('rstatus').textContent = `Dijkstra: ${dijkstraResult.totalTimeMin} min (Saved ${timeSavedMin}m)`;
+
+  // 8. Re-render Map with both optimal and congested route paths
+  renderMap(alternatePath ? alternatePath.path : null);
+
+  if (showToastNotice) {
+    toast(`Dijkstra optimal: ${dijkstraResult.path.join(' ➔ ')} (${dijkstraResult.totalTimeMin} min)`);
+    log(`Dijkstra calculated best route: ${dijkstraResult.path.join(' ➔ ')} (${dijkstraResult.totalTimeMin} min, saved ${timeSavedMin} min)`);
+  }
+}
+
+function toggleDetails() {
+  const w = document.getElementById('segmentDetailsWrap');
+  w.style.display = w.style.display === 'none' ? 'block' : 'none';
+}
+
+// Convert an array of node IDs into coordinate points, including any intermediate road waypoints
+function buildRouteCoords(nodeList) {
+  const coords = [];
+  for (let i = 0; i < nodeList.length; i++) {
+    const u = nodeList[i];
+    coords.push(pos[u]);
+    if (i < nodeList.length - 1) {
+      const v = nodeList[i + 1];
+      const edge = getEdgesFrom(u).find(e => e.to === v);
+      if (edge && edge.waypoints && edge.waypoints.length > 0) {
+        for (const wp of edge.waypoints) {
+          coords.push(wp);
+        }
+      }
+    }
+  }
+  return coords;
+}
+
+// Map Rendering: Draws junctions, signals, Dijkstra route, and alternative congested route
+function renderMap(altPath = null) {
+  // 1. Draw dynamic signal indicators
+  document.getElementById('mapSignals').innerHTML = js.map(j => {
+    const [x, y] = pos[j.id];
+    const c = j.phase === 'GREEN' ? '#31d0a0' : j.phase === 'RED' ? '#ff647c' : '#ffb547';
+    return `
+      <g>
+        <circle cx="${x}" cy="${y}" r="14" fill="#08111d" stroke="${c}" stroke-width="4"/>
+        <circle cx="${x}" cy="${y}" r="5" fill="${c}"/>
+        <rect x="${x - 18}" y="${y + 17}" width="36" height="15" rx="3" fill="#0b1626" stroke="#253a54" stroke-width="1"/>
+        <text x="${x}" y="${y + 28}" text-anchor="middle" fill="${c}" font-size="9" font-weight="bold">${j.density}%</text>
+      </g>
+    `;
+  }).join('');
+
+  // 2. Active Path Drawing
+  const activePath = emergency ? emergency.route : (currentDijkstraResult ? currentDijkstraResult.path : null);
+  const routeLayer = document.getElementById('routeLayer');
+  const altLayer = document.getElementById('altRouteLayer');
+
+  if (!activePath || activePath.length < 2) {
+    routeLayer.innerHTML = '';
+    altLayer.innerHTML = '';
+    return;
+  }
+
+  // Draw alternative congested route if present and distinct
+  if (altPath && altPath.length > 1 && altPath.join('-') !== activePath.join('-')) {
+    const altCoords = buildRouteCoords(altPath);
+    const altPts = altCoords.map(pt => pt.join(',')).join(' ');
+    altLayer.innerHTML = `
+      <polyline points="${altPts}" fill="none" stroke="#ff4d6d" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 6" opacity="0.65"/>
+    `;
+  } else {
+    altLayer.innerHTML = '';
+  }
+
+  // Draw Primary Dijkstra Optimal Route
+  const routeCoords = buildRouteCoords(activePath);
+  const pts = routeCoords.map(pt => pt.join(',')).join(' ');
+
+  routeLayer.innerHTML = `
+    <!-- Outer glow -->
+    <polyline points="${pts}" fill="none" stroke="#ff8a24" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" opacity="0.25"/>
+    <!-- Animated flow pulse -->
+    <polyline points="${pts}" fill="none" stroke="#ff8a24" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="10 7">
+      <animate attributeName="stroke-dashoffset" from="0" to="-34" dur="1s" repeatCount="indefinite"/>
+    </polyline>
+  ` + activePath.map((k, i) => {
+    const [x, y] = pos[k];
+    const isStart = i === 0;
+    const isEnd = i === activePath.length - 1;
+    const label = isStart ? 'START' : isEnd ? 'DEST' : 'P' + i;
+    const pinColor = isStart ? '#ff8a24' : isEnd ? '#31d0a0' : '#ffa54f';
+    return `
+      <circle cx="${x}" cy="${y}" r="8" fill="${pinColor}" stroke="#ffffff" stroke-width="2"/>
+      <text x="${x + 13}" y="${y - 12}" fill="${pinColor}" font-size="11" font-weight="bold">${label}</text>
+    `;
+  }).join('');
+}
+
+// Render Intersection Control Cards
+function render() {
+  document.getElementById('signals').innerHTML = js.map(j => `
+    <div class="signal">
+      <div class="sighead">
+        <div>
+          <b>${j.name}</b>
+          <div class="sigid">${j.id} · ${j.road}</div>
+        </div>
+        <div class="light">
+          <i class="bulb red ${j.phase === 'RED' ? 'on' : ''}"></i>
+          <i class="bulb yellow ${j.phase === 'YELLOW' ? 'on' : ''}"></i>
+          <i class="bulb green ${j.phase === 'GREEN' ? 'on' : ''}"></i>
+        </div>
+      </div>
+      <div class="density">
+        <span>Traffic density</span>
+        <b>${j.density}%</b>
+      </div>
+      <div class="bar">
+        <span style="width:${j.density}%"></span>
+      </div>
+      <div class="fields">
+        <div class="field">
+          <label>Vehicles Counted</label>
+          <input type="number" min="0" max="999" value="${j.count}" onchange="countSet('${j.id}',this.value)">
+        </div>
+        <div class="field">
+          <label>Green Time (sec)</label>
+          <input type="number" min="5" max="180" value="${j.green}" onchange="greenSet('${j.id}',this.value)">
+        </div>
+      </div>
+      <div class="actions">
+        <button class="small" onclick="phase('${j.id}','GREEN')">Green</button>
+        <button class="small" onclick="phase('${j.id}','YELLOW')">Yellow</button>
+        <button class="small danger" onclick="phase('${j.id}','RED')">Red</button>
+        <button class="small" onclick="auto('${j.id}')">Auto Density</button>
+      </div>
+    </div>
+  `).join('');
+
+  renderVehicles();
+  stats();
+  runDijkstra();
+}
+
+function phase(id, p) {
+  js.find(j => j.id === id).phase = p;
+  render();
+  log(`${id} phase manually changed to ${p}`);
+  alertMsg(`${id} signal changed to ${p}`);
+  toast(`${id}: ${p}`);
+}
+
+function countSet(id, v) {
+  const j = js.find(x => x.id === id);
+  j.count = Math.max(0, Number(v) || 0);
+  j.density = Math.min(100, Math.round((j.count / 80) * 100));
+  render();
+  log(`${id} vehicle volume updated to ${j.count} (${j.density}% density)`);
+}
+
+function greenSet(id, v) {
+  const j = js.find(x => x.id === id);
+  j.green = Math.max(5, Math.min(180, Number(v) || 5));
+  render();
+  log(`${id} green duration configured to ${j.green}s`);
+}
+
+function auto(id) {
+  const j = js.find(x => x.id === id);
+  j.green = Math.max(15, Math.min(90, Math.round(15 + j.density * 0.65)));
+  j.phase = j.density > 35 ? 'GREEN' : 'YELLOW';
+  render();
+  log(`${id} adaptive timing set: ${j.green}s green`);
+  toast('Adaptive timing updated');
+}
+
+// ==========================================
+// 4. EMERGENCY DISPATCH & SIGNAL PREEMPTION
+// ==========================================
+
+function activateEmergency() {
+  const start = document.getElementById('emStart').value;
+  const end = document.getElementById('emEnd').value;
+  const plate = document.getElementById('emPlate').value.trim();
+  const type = document.getElementById('emType').value;
+  const mode = document.getElementById('routeMode').value;
+  const criterion = document.getElementById('routeCriterion').value;
+
+  if (!plate) {
+    toast('Enter emergency vehicle registration');
+    return;
+  }
+  if (start === end) {
+    toast('Select different origin and destination');
+    return;
+  }
+
+  // Run Dijkstra with emergency green-wave flag
+  const dijkstraResult = dijkstra(start, end, criterion, mode === 'priority');
+  emergency = {
+    plate,
+    type,
+    start,
+    end,
+    route: dijkstraResult.path,
+    time: dijkstraResult.totalTimeMin,
+    dist: dijkstraResult.totalDistKm
+  };
+
+  // If priority green-wave is enabled, turn all junctions on Dijkstra path to GREEN
+  if (mode === 'priority') {
+    emergency.route.forEach(id => {
+      const junction = js.find(j => j.id === id);
+      if (junction) junction.phase = 'GREEN';
+    });
+  }
+
+  render();
+  document.getElementById('algoTag').textContent = 'DISPATCH ACTIVE';
+  document.getElementById('algoTag').className = 'tag active-tag';
+  document.getElementById('emStatus').innerHTML =
+    `<b>ACTIVE DISPATCH:</b> ${esc(plate)} (${esc(type)}) dispatched on Dijkstra route <b>${emergency.route.join(' ➔ ')}</b>. Estimated time: <b>${emergency.time} min</b> (${mode === 'priority' ? 'Green-Wave Preemption Active' : 'Standard Traffic'}).`;
+  document.getElementById('emStatus').className = 'notice success';
+
+  log(`Emergency dispatch active: ${plate} (${type}) routed ${start} → ${end} via ${emergency.route.join('➔')}`);
+  alertMsg(`EMERGENCY ${type.toUpperCase()} ${plate} PRIORITY DISPATCHED`);
+  toast(`Dijkstra priority route active: ${emergency.route.join(' ➔ ')}`);
+}
+
+function clearEmergency() {
+  emergency = null;
+  document.getElementById('algoTag').textContent = 'DIJKSTRA READY';
+  document.getElementById('algoTag').className = 'tag';
+  document.getElementById('emStatus').innerHTML =
+    'No active emergency dispatch. Signal preemption is idle. Dijkstra algorithm remains available for route planning.';
+  document.getElementById('emStatus').className = 'notice success';
+  render();
+  log('Active route dispatch cleared');
+  toast('Route cleared');
+}
+
+// ==========================================
+// 5. VEHICLE REGISTRY & BLACKLIST
+// ==========================================
+
+function addVehicle() {
+  const plate = document.getElementById('plate').value.trim().toUpperCase().replace(/\s+/g, '');
+  if (!plate) {
+    toast('Enter registration number');
+    return;
+  }
+  const status = document.getElementById('vaction').value === 'blacklist' ? 'BLACKLISTED' : 'ALLOWED';
+  const type = document.getElementById('vtype').value;
+  const note = document.getElementById('reason').value.trim() || 'No note';
+
+  const v = vehicles.find(x => x.plate === plate);
+  if (v) {
+    Object.assign(v, { status, type, note });
+  } else {
+    vehicles.unshift({ plate, status, type, note });
+  }
+
+  renderVehicles();
+  stats();
+  log(`${plate} marked ${status}`);
+  alertMsg(`${plate} registered as ${status}`);
+  document.getElementById('plate').value = '';
+  document.getElementById('reason').value = '';
+  toast('Vehicle record saved');
+}
+
+function toggleVehicle(plate) {
+  const v = vehicles.find(x => x.plate === plate);
+  if (!v) return;
+  v.status = v.status === 'BLACKLISTED' ? 'ALLOWED' : 'BLACKLISTED';
+  renderVehicles();
+  stats();
+  log(`${plate} status toggled to ${v.status}`);
+  alertMsg(`${plate} updated to ${v.status}`);
+}
+
+function renderVehicles() {
+  document.getElementById('vehicles').innerHTML = vehicles.map(v => `
+    <tr>
+      <td><b>${esc(v.plate)}</b></td>
+      <td>${esc(v.type)}</td>
+      <td><span class="status ${v.status === 'BLACKLISTED' ? 'st-red' : 'st-green'}">${v.status}</span></td>
+      <td>${esc(v.note)}</td>
+      <td>
+        <button class="small" onclick="toggleVehicle('${esc(v.plate)}')">
+          ${v.status === 'BLACKLISTED' ? 'Allow' : 'Blacklist'}
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function stats() {
+  document.getElementById('total').textContent = js.reduce((a, j) => a + j.count, 0);
+  document.getElementById('blcount').textContent = vehicles.filter(v => v.status === 'BLACKLISTED').length;
+}
+
+function tick() {
+  document.getElementById('clock').textContent = new Date().toLocaleTimeString();
+}
+
+setInterval(tick, 1000);
+tick();
+render();
+alertMsg('NETRA Traffic System & Dijkstra Routing Engine initialized.');
+</script>
+</body>
+</html>
