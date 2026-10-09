@@ -466,9 +466,33 @@ th{color:var(--muted);font-weight:600}
           <div class="cctv-header">
             <div>
               <b id="cctvTitle">CAM-02 • J2 Mall Road Crossing</b>
-              <div style="font-size:10px;color:var(--muted)">Mast-Arm PTZ Optical Sensor #0492</div>
+              <div style="font-size:10px;color:var(--muted)">Mast-Arm PTZ Optical Sensor #0492 • Live CCTV Feed</div>
             </div>
-            <button class="small" onclick="sync3DCameraToCurrentCCTV()">🎥 View from Mast in 3D</button>
+            <div style="display:flex;gap:6px">
+              <button class="small" onclick="sync3DCameraToCurrentCCTV()">🎥 View in 3D</button>
+            </div>
+          </div>
+
+          <!-- AMBULANCE CLEAR INTERSECTION PRIORITY BAR -->
+          <div id="ambBarContainer" style="display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,rgba(255,138,36,0.18),rgba(239,68,68,0.12));border:1.5px solid rgba(255,138,36,0.5);border-radius:8px;padding:9px 12px;margin-bottom:10px;box-shadow:0 0 16px rgba(255,138,36,0.15)">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:22px;animation:pulse 1.2s infinite">🚑</span>
+              <div>
+                <b style="color:#ffa347;font-size:12px;display:flex;align-items:center;gap:6px" id="ambBarTitle">
+                  <span>AMBULANCE STOPPED AT CAM-02</span>
+                  <span style="background:#ef4444;color:#fff;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:900">WAITING</span>
+                </b>
+                <div style="font-size:11px;color:#e2e8f0;margin-top:2px" id="ambBarDesc">Click button to turn signal GREEN & make all standing vehicles move forward!</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button type="button" class="orange" id="btnReleaseVehicles" onclick="triggerReleaseVehicles()" style="font-weight:800;font-size:12px;padding:7px 14px;box-shadow:0 0 12px rgba(255,138,36,0.4)">
+                🚨 Clear Signal & Move All Vehicles ➔
+              </button>
+              <button type="button" class="small" id="btnResetVehicles" onclick="resetVehiclesStopped()" style="background:#132034;color:#94a3b8;font-size:11px">
+                🛑 Stop Vehicles
+              </button>
+            </div>
           </div>
 
           <!-- CCTV Viewport with Live Visual Feed, Traffic Light & Standing Vehicles -->
@@ -720,7 +744,7 @@ th{color:var(--muted);font-weight:600}
 // ==========================================
 const js = [
   { id: 'J1', name: 'Central Junction', road: 'Main Bazaar Rd', count: 62, density: 78, phase: 'RED', green: 35, lat: '28.4612° N', lng: '77.0210° E' },
-  { id: 'J2', name: 'Mall Road Crossing', road: 'Mall Road', count: 48, density: 61, phase: 'GREEN', green: 45, lat: '28.4635° N', lng: '77.0285° E' },
+  { id: 'J2', name: 'Mall Road Crossing', road: 'Mall Road', count: 48, density: 61, phase: 'RED', green: 45, lat: '28.4635° N', lng: '77.0285° E' },
   { id: 'J3', name: 'Hospital Junction', road: 'Civil Hospital Rd', count: 31, density: 42, phase: 'RED', green: 30, lat: '28.4658° N', lng: '77.0360° E' },
   { id: 'J4', name: 'Railway Station', road: 'Station Road', count: 57, density: 72, phase: 'YELLOW', green: 35, lat: '28.4520° N', lng: '77.0210° E' },
   { id: 'J5', name: 'Ring Road Crossing', road: 'Ring Road', count: 50, density: 55, phase: 'GREEN', green: 45, lat: '28.4535° N', lng: '77.0285° E' },
@@ -740,6 +764,9 @@ let alerts = [];
 let logs = [];
 let currentViewMode = '3d';
 let activeCCTVId = 'J2';
+let cctvVehiclesMoving = false;
+let cctvMoveProgress = 0.0;
+let cctvAmbulancePresent = true; // By default ambulance is present on Cam 02
 
 const pos2D = {
   J1: [140, 100],
@@ -1801,13 +1828,27 @@ function animate3D() {
     car.group.lookAt(car.end);
   });
 
-  // Continuous CCTV Camera Feed Sync
-  if (Math.floor(Date.now() / 200) % 2 === 0) {
+  // Smooth Continuous CCTV Motion Animation
+  if (cctvVehiclesMoving) {
+    cctvMoveProgress += 0.0075;
+    if (cctvMoveProgress > 1.25) {
+      // Loop or reset smoothly
+      cctvMoveProgress = 0.0;
+    }
+    renderCCTVVisualFeed();
+  } else if (Math.floor(Date.now() / 150) % 2 === 0) {
     renderCCTVVisualFeed();
   }
 
-  // Continuous CCTV Camera Feed Sync
-  if (Math.floor(Date.now() / 200) % 2 === 0) {
+  // Smooth Continuous CCTV Motion Animation
+  if (cctvVehiclesMoving) {
+    cctvMoveProgress += 0.0075;
+    if (cctvMoveProgress > 1.25) {
+      // Loop or reset smoothly
+      cctvMoveProgress = 0.0;
+    }
+    renderCCTVVisualFeed();
+  } else if (Math.floor(Date.now() / 150) % 2 === 0) {
     renderCCTVVisualFeed();
   }
 
@@ -1936,6 +1977,90 @@ function switchView(mode) {
 // =======================================================
 // 4. SIGNAL CCTV CAMERA FEED & AI BOUNDING BOXES
 // =======================================================
+
+
+// =======================================================
+// AMBULANCE CLEAR INTERSECTION & VEHICLE MOTION TRIGGERS
+// =======================================================
+
+function triggerReleaseVehicles(targetJunction = 'J2') {
+  activeCCTVId = targetJunction;
+  const j = js.find(x => x.id === targetJunction);
+  if (!j) return;
+
+  // 1. Immediately preempt traffic signal to GREEN
+  j.phase = 'GREEN';
+  j.green = 50;
+  j.remainingSec = 50;
+
+  // 2. Start vehicle forward motion
+  cctvVehiclesMoving = true;
+  cctvMoveProgress = 0.0;
+
+  // 3. Dispatch 3D ambulance on the Dijkstra route
+  emergency = {
+    origin: targetJunction,
+    dest: 'J3',
+    route: [targetJunction, 'J3'],
+    type: 'Ambulance',
+    plate: 'HR26-AMB-001'
+  };
+  update3DRouteRibbon(['J2', 'J3']);
+  isFollowAmbulance = true;
+
+  // 4. Update HUD and Copilot UI
+  const title = document.getElementById('ambBarTitle');
+  if (title) {
+    title.innerHTML = '<span>GREEN CORRIDOR ACTIVE • ALL VEHICLES MOVING!</span> <span style="background:#10b981;color:#000;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:900">MOVING</span>';
+  }
+  const desc = document.getElementById('ambBarDesc');
+  if (desc) {
+    desc.textContent = 'Signal preempted to GREEN. Civilian cars accelerating forward; Ambulance clearing intersection at 68 km/h!';
+  }
+
+  // 5. Update Copilot reasoning
+  const stream = document.getElementById('llmStreamText');
+  if (stream) {
+    stream.innerHTML = `
+      <b>[AI EMERGENCY GREEN CORRIDOR TRIGGERED]:</b><br>
+      • <b>Signal Preemption:</b> CAM-02 (J2 Mall Road) preempted to <b>GREEN WAVE</b>.<br>
+      • <b>Traffic Clearance:</b> Civilian vehicles moving forward to yield right-of-way.<br>
+      • <b>Ambulance Transit:</b> HR26-AMB-001 moving at 68 km/h toward Civil Hospital (J3). Est. arrival: 2.1 mins.
+    `;
+  }
+
+  render();
+  updateCCTVFeedHUD();
+  alertMsg(`🚨 EMERGENCY GREEN WAVE: J2 signal turned GREEN! All vehicles & ambulance moving forward.`);
+  toast(`🚨 J2 Cleared! Traffic & Ambulance Moving!`);
+}
+
+function resetVehiclesStopped(targetJunction = 'J2') {
+  activeCCTVId = targetJunction;
+  const j = js.find(x => x.id === targetJunction);
+  if (!j) return;
+
+  // Turn signal to RED
+  j.phase = 'RED';
+  j.remainingSec = 25;
+
+  // Stop vehicle motion and reset position back behind stop line
+  cctvVehiclesMoving = false;
+  cctvMoveProgress = 0.0;
+
+  const title = document.getElementById('ambBarTitle');
+  if (title) {
+    title.innerHTML = '<span>AMBULANCE STOPPED AT CAM-02</span> <span style="background:#ef4444;color:#fff;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:900">STOPPED</span>';
+  }
+  const desc = document.getElementById('ambBarDesc');
+  if (desc) {
+    desc.textContent = 'Vehicles stopped at red light. Click button to trigger Green Corridor and make all vehicles move!';
+  }
+
+  render();
+  updateCCTVFeedHUD();
+  toast('Vehicles stopped at red light behind stop line');
+}
 
 function selectCCTV(junctionId) {
   activeCCTVId = junctionId;
@@ -2191,43 +2316,53 @@ function renderCCTVVisualFeed() {
     ctx.restore();
   });
 
-  // 4. DRAW STABLE STANDING VEHICLES QUEUED AT THE STOP LINE
-  // These represent the real physical traffic queued at this intersection
-  const isEmergencyActive = !!emergency;
-  const isBraking = isRed || isYellow;
+  // 4. DRAW VEHICLES (STOPPED AT RED LIGHT OR DYNAMICALLY MOVING ON GREEN)
+  // On Cam 02 (J2), the Emergency Ambulance is stopped in Lane 2!
+  const isAmbOnThisCam = (activeCCTVId === 'J2') && cctvAmbulancePresent;
+  const isMoving = cctvVehiclesMoving && isGreen;
+  const isBraking = (!isMoving) && (isRed || isYellow);
+
+  // Calculate dynamic forward progress across intersection
+  const p = cctvMoveProgress; // 0.0 (standing) to 1.0 (cleared)
+  const forwardTravelY = p * 135; // moves forward past stop line toward vanishing point
 
   const standingVehicles = [
-    // FRONT ROW (Stopped right behind white stop bar at stopY)
+    // FRONT ROW
     {
-      x: w * 0.28, y: stopY + 12, w: 66, h: 42,
+      laneX: w * 0.28, baseY: stopY + 14, baseW: 66, baseH: 42,
       type: 'SEDAN', color: '#1e3a8a', plate: 'DL01AB9912',
-      name: 'SEDAN [0.96]', conf: '96.2%', isAlert: false
+      name: isMoving ? 'SEDAN (52 km/h)' : 'SEDAN [0.96]', conf: '96.2%', isAlert: false,
+      speedBoost: 1.0
     },
     {
-      x: w * 0.50, y: stopY + 16, w: 72, h: 45,
-      type: isEmergencyActive ? 'AMBULANCE' : 'CAR',
-      color: isEmergencyActive ? '#ffffff' : '#475569',
-      plate: isEmergencyActive ? 'HR26-AMB-001' : 'HR20AB7788',
-      name: isEmergencyActive ? 'EMERGENCY AMBULANCE' : 'SEDAN [0.97]',
-      conf: isEmergencyActive ? '99.4%' : '97.1%',
-      isAlert: isEmergencyActive
+      laneX: w * 0.50, baseY: stopY + 18, baseW: 72, baseH: 45,
+      type: isAmbOnThisCam ? 'AMBULANCE' : 'CAR',
+      color: isAmbOnThisCam ? '#ffffff' : '#475569',
+      plate: isAmbOnThisCam ? 'HR26-AMB-001' : 'HR20AB7788',
+      name: isAmbOnThisCam ? (isMoving ? '🚑 AMBULANCE IN TRANSIT (68 km/h)' : '🚨 AMBULANCE STOPPED') : (isMoving ? 'SEDAN (54 km/h)' : 'SEDAN [0.97]'),
+      conf: isAmbOnThisCam ? '99.4%' : '97.1%',
+      isAlert: isAmbOnThisCam,
+      speedBoost: 1.25 // Ambulance pulls ahead faster through intersection!
     },
     {
-      x: w * 0.72, y: stopY + 10, w: 70, h: 44,
+      laneX: w * 0.72, baseY: stopY + 12, baseW: 70, baseH: 44,
       type: 'SUV', color: '#0f172a', plate: 'HR26CD4581',
-      name: 'SUV [BLACKLISTED]', conf: '97.8%', isAlert: true
+      name: isMoving ? 'SUV (48 km/h)' : 'SUV [BLACKLISTED]', conf: '97.8%', isAlert: true,
+      speedBoost: 0.95
     },
 
-    // SECOND ROW (Queued behind front row)
+    // SECOND ROW QUEUED BEHIND
     {
-      x: w * 0.32, y: stopY + 68, w: 90, h: 56,
+      laneX: w * 0.32, baseY: stopY + 70, baseW: 90, baseH: 56,
       type: 'BUS', color: '#047857', plate: 'HR55TR3004',
-      name: 'TRANSIT BUS [0.98]', conf: '98.5%', isAlert: false
+      name: isMoving ? 'BUS (38 km/h)' : 'TRANSIT BUS [0.98]', conf: '98.5%', isAlert: false,
+      speedBoost: 0.85
     },
     {
-      x: w * 0.68, y: stopY + 64, w: 84, h: 52,
+      laneX: w * 0.68, baseY: stopY + 66, baseW: 84, baseH: 52,
       type: 'VAN', color: '#b45309', plate: 'HR39FQ2201',
-      name: 'DELIVERY VAN [0.95]', conf: '95.3%', isAlert: false
+      name: isMoving ? 'VAN (44 km/h)' : 'DELIVERY VAN [0.95]', conf: '95.3%', isAlert: false,
+      speedBoost: 0.90
     }
   ];
 
@@ -2235,10 +2370,22 @@ function renderCCTVVisualFeed() {
     // Only render queued rows corresponding to traffic density
     if (veh.y > stopY + 50 && j.density < 40) return;
 
-    const vx = veh.x - veh.w / 2;
-    const vy = veh.y;
-    const vw = veh.w;
-    const vh = veh.h;
+    // Compute 3D perspective position as vehicles move forward across the intersection
+    const advanceY = isMoving ? (forwardTravelY * veh.speedBoost) : 0;
+    const curY = veh.baseY - advanceY;
+
+    // Disappear once cleared past the horizon
+    if (curY < horizonY - 10) return;
+
+    // Perspective interpolation factor
+    const t = Math.max(0, (curY - horizonY) / (veh.baseY - horizonY));
+    const curX = vpX + (veh.laneX - vpX) * t;
+    const scale = Math.max(0.35, 0.45 + 0.55 * t);
+
+    const vw = veh.baseW * scale;
+    const vh = veh.baseH * scale;
+    const vx = curX - vw / 2;
+    const vy = curY;
 
     // Ground contact shadow
     ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
