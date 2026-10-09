@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NETRA Traffic Command • 3D City & Dijkstra Route Optimizer</title>
-<!-- Three.js & OrbitControls for Native Browser 3D Simulation -->
+<title>NETRA Traffic Command • Realistic 3D Digital Twin & Dijkstra Optimizer</title>
+<!-- Three.js & OrbitControls for Native High-Fidelity 3D Simulation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
 <style>
 :root{
-  --bg:#0b1220;--p:#142137;--line:#2a3b54;--txt:#eaf1fb;--muted:#9aacc4;
-  --green:#31d0a0;--red:#ff647c;--yellow:#ffb547;--orange:#ff8a24;--blue:#62a8ff;
-  --panel-bg:linear-gradient(145deg,#142137,#101a2a);
+  --bg:#070d18;--p:#111c2e;--line:#223652;--txt:#eaf1fb;--muted:#8fa5c2;
+  --green:#31d0a0;--red:#ff5271;--yellow:#ffb547;--orange:#ff8a24;--blue:#4d98ff;
+  --panel-bg:linear-gradient(145deg,#121e31,#0b1524);
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--txt);font:14px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 button,input,select{font:inherit}
-button{background:#1d304a;color:white;border:1px solid #39516f;border-radius:8px;padding:8px 12px;cursor:pointer;transition:all .15s ease}
+button{background:#1a2b42;color:white;border:1px solid #334e73;border-radius:8px;padding:8px 12px;cursor:pointer;transition:all .15s ease}
 button:hover{filter:brightness(1.2);transform:translateY(-1px)}
 button:active{transform:translateY(0)}
 .primary{background:#2369cf;border-color:#3f83e6}
@@ -25,14 +25,14 @@ button:active{transform:translateY(0)}
 .orange{background:#693a17;border-color:#b46429}
 .accent-btn{background:#123c33;border-color:#2a8b71;color:#6bf0c7;font-weight:700}
 .app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
-.side{background:#0c1524;padding:22px 14px;border-right:1px solid var(--line)}
+.side{background:#091220;padding:22px 14px;border-right:1px solid var(--line)}
 .brand{font-weight:900;font-size:17px;letter-spacing:0.5px}
 .brand span{color:var(--green)}
 .sub{font-size:10px;color:var(--muted);margin:5px 0 24px;letter-spacing:1px}
 .nav div{padding:10px 12px;margin:4px 0;color:var(--muted);border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px}
 .nav div:hover{background:#132034;color:var(--txt)}
 .nav .active{background:#1b2b42;color:white;font-weight:600}
-.main{padding:22px;max-width:1650px;width:100%;margin:auto}
+.main{padding:22px;max-width:1680px;width:100%;margin:auto}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
 .eyebrow{color:var(--green);font-size:11px;letter-spacing:1.5px;font-weight:bold}
 .h1{font-size:24px;font-weight:800;margin:4px 0}
@@ -90,22 +90,28 @@ th{color:var(--muted);font-weight:600}
 .toast{display:none;position:fixed;bottom:24px;right:24px;padding:12px 18px;background:#103830;border:1px solid #288c73;border-radius:9px;color:#8bf9d8;box-shadow:0 10px 30px rgba(0,0,0,0.5);font-weight:600;z-index:99}
 .toast.show{display:block;animation:fadeIn .2s ease}
 
-/* 3D Viewport & HUD Styling */
+/* High-Realism 3D Viewport & Interactive HUD */
 #view3dWrap{
-  position:relative;width:100%;height:460px;background:#060d17;
+  position:relative;width:100%;height:490px;background:#040912;
   border:1px solid var(--line);border-radius:10px;overflow:hidden;
 }
-#threeCanvasContainer{width:100%;height:100%;display:block;outline:none}
+#threeCanvasContainer{width:100%;height:100%;display:block;outline:none;cursor:grab}
+#threeCanvasContainer:active{cursor:grabbing}
 .cam-overlay{
   position:absolute;top:10px;left:10px;display:flex;gap:6px;align-items:center;
-  background:rgba(8,16,28,0.85);backdrop-filter:blur(6px);border:1px solid rgba(42,59,84,0.7);
-  padding:6px 8px;border-radius:8px;z-index:10;
+  background:rgba(8,16,28,0.85);backdrop-filter:blur(8px);border:1px solid rgba(42,59,84,0.8);
+  padding:6px 10px;border-radius:8px;z-index:10;
 }
-.cam-hint{font-size:10px;color:var(--muted);margin-left:8px}
+.cam-hint{font-size:10px;color:var(--muted);margin-left:6px}
 .route-hud-pill{
-  position:absolute;bottom:12px;left:12px;background:rgba(8,16,28,0.9);backdrop-filter:blur(6px);
-  border:1px solid rgba(255,138,36,0.5);padding:8px 14px;border-radius:8px;font-size:12px;
-  display:flex;align-items:center;gap:8px;z-index:10;
+  position:absolute;bottom:12px;left:12px;background:rgba(8,16,28,0.92);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,138,36,0.6);padding:8px 14px;border-radius:8px;font-size:12px;
+  display:flex;align-items:center;gap:8px;z-index:10;box-shadow:0 4px 20px rgba(0,0,0,0.5);
+}
+.env-overlay{
+  position:absolute;top:10px;right:10px;display:flex;gap:5px;align-items:center;
+  background:rgba(8,16,28,0.85);backdrop-filter:blur(8px);border:1px solid rgba(42,59,84,0.8);
+  padding:5px 8px;border-radius:8px;z-index:10;font-size:11px;
 }
 .view-switch-btn{
   background:#14243b;border:1px solid #2a4163;color:#cbdcf0;font-size:11px;font-weight:700;
@@ -149,21 +155,21 @@ th{color:var(--muted);font-weight:600}
 <div class="app">
 <aside class="side">
   <div class="brand">NETRA<span>●</span> TRAFFIC</div>
-  <div class="sub">3D CITY COMMAND CENTER</div>
+  <div class="sub">3D CITY DIGITAL TWIN COMMAND</div>
   <div class="nav">
     <div class="active">▦ &nbsp; Live Dashboard</div>
     <div>◉ &nbsp; Signal Control</div>
-    <div>🎮 &nbsp; 3D City View</div>
+    <div>🎮 &nbsp; 3D City Twin</div>
     <div>⚡ &nbsp; Dijkstra Optimizer</div>
     <div>⌁ &nbsp; Emergency Priority</div>
     <div>▣ &nbsp; Vehicle Registry</div>
     <div>⚑ &nbsp; Blacklist Records</div>
     <div>◷ &nbsp; Event Log</div>
   </div>
-  <div style="margin-top:40px;background:#09121e;border:1px solid var(--line);padding:12px;border-radius:8px">
-    <div style="font-size:11px;font-weight:700;color:var(--green)">🎮 3D SIMULATION ENGINE</div>
+  <div style="margin-top:40px;background:#08121f;border:1px solid var(--line);padding:12px;border-radius:8px">
+    <div style="font-size:11px;font-weight:700;color:var(--green)">🏙️ REALISTIC DIGITAL TWIN</div>
     <div style="font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4">
-      WebGL 3D rendering with live traffic signals, moving vehicles, and holographic Dijkstra path visualization.
+      Physically modeled multi-lane roads, crosswalks, traffic light gantries, vehicle queues, and emergency pathfinding.
     </div>
   </div>
 </aside>
@@ -172,12 +178,12 @@ th{color:var(--muted);font-weight:600}
   <!-- Top Bar -->
   <div class="top">
     <div>
-      <div class="eyebrow">INTELLIGENT TRANSPORT SYSTEM • 3D DIGITAL TWIN</div>
-      <div class="h1">Traffic Operations & 3D City Route Optimizer</div>
-      <div class="muted">Interactive 3D video-game city map, dynamic Dijkstra time-saving pathfinding, and emergency green-waves.</div>
+      <div class="eyebrow">INTELLIGENT TRANSPORT SYSTEM • 3D DIGITAL TWIN COMMAND</div>
+      <div class="h1">Realistic Traffic Operations & Dijkstra Route Optimizer</div>
+      <div class="muted">Real-time signal gantry control, vehicle queuing & stop physics, day/night lighting, and shortest-time emergency dispatch.</div>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
-      <span class="tag active-tag">● 3D ENGINE RUNNING</span>
+      <span class="tag active-tag">● 3D TWIN ENGINE ACTIVE</span>
       <span class="tag" id="clock">--:--:--</span>
     </div>
   </div>
@@ -187,12 +193,12 @@ th{color:var(--muted);font-weight:600}
     <div class="stat">
       <div class="statlabel">Intersections</div>
       <div class="statval">5</div>
-      <div class="statfoot">3D gantry controllers</div>
+      <div class="statfoot">3D signal gantries</div>
     </div>
     <div class="stat">
       <div class="statlabel">Vehicles Monitored</div>
       <div class="statval" id="total">248</div>
-      <div class="statfoot">Simulated traffic volume</div>
+      <div class="statfoot">Simulated corridor volume</div>
     </div>
     <div class="stat glow-green">
       <div class="statlabel">Best Route Time</div>
@@ -207,38 +213,47 @@ th{color:var(--muted);font-weight:600}
     <div class="stat">
       <div class="statlabel">Blacklist Registry</div>
       <div class="statval" id="blcount">2</div>
-      <div class="statfoot">Security watchlist</div>
+      <div class="statfoot">Security flagged plates</div>
     </div>
   </div>
 
   <div class="layout">
-    <!-- LEFT COLUMN: MAP & INTERSECTIONS -->
+    <!-- LEFT COLUMN: REALISTIC 3D MAP & SIGNALS -->
     <section>
-      <!-- 3D & 2D City Map Panel -->
+      <!-- Realistic 3D City Digital Twin Panel -->
       <div class="panel">
         <div class="ph">
-          <div class="pt"><span>🎮</span> City Grid Visualizer • 3D Digital Twin</div>
+          <div class="pt"><span>🏙️</span> City Grid Schematic • 3D Digital Twin</div>
           <div style="display:flex;align-items:center;gap:6px">
-            <button class="view-switch-btn active" id="btnMode3D" onclick="switchView('3d')">🎮 3D Game View</button>
+            <button class="view-switch-btn active" id="btnMode3D" onclick="switchView('3d')">🎮 3D Digital Twin</button>
             <button class="view-switch-btn" id="btnMode2D" onclick="switchView('2d')">📐 2D Schematic</button>
             <span class="tag active-tag" id="rstatus">Dijkstra Ready</span>
           </div>
         </div>
 
-        <!-- 3D WebGL Canvas Viewport -->
+        <!-- High-Realism 3D WebGL Canvas Viewport -->
         <div id="view3dWrap">
           <div id="threeCanvasContainer"></div>
 
-          <!-- Floating 3D Camera Controls Toolbar -->
+          <!-- Camera Presets Toolbar -->
           <div class="cam-overlay">
             <button class="small" onclick="setCamPreset('iso')">🎮 Isometric</button>
             <button class="small" onclick="setCamPreset('top')">🛰️ Top-Down</button>
             <button class="small" onclick="setCamPreset('driver')">🚗 Follow Ambulance</button>
+            <button class="small" onclick="setCamPreset('street')">🏙️ Street Level</button>
             <button class="small" onclick="setCamPreset('reset')">🔄 Reset</button>
-            <span class="cam-hint">🖱️ Left-Click: Rotate • Right-Click: Pan • Scroll: Zoom</span>
+            <span class="cam-hint">🖱️ Left-Drag: Orbit • Scroll: Zoom • Right-Drag: Pan</span>
           </div>
 
-          <!-- Floating 3D HUD Route Pill -->
+          <!-- Lighting Environment Controls (Day / Dusk / Night) -->
+          <div class="env-overlay">
+            <span style="font-weight:700;color:var(--muted)">Lighting:</span>
+            <button class="small" onclick="setLightingPreset('night')" id="btnLightNight" style="background:#2369cf">🌙 Night</button>
+            <button class="small" onclick="setLightingPreset('dusk')" id="btnLightDusk">🌆 Dusk</button>
+            <button class="small" onclick="setLightingPreset('day')" id="btnLightDay">☀️ Day</button>
+          </div>
+
+          <!-- Live 3D HUD Route Banner -->
           <div class="route-hud-pill">
             <span style="color:var(--orange);font-weight:900">⚡ 3D DIJKSTRA ROUTE:</span>
             <span id="hudRouteSeq" style="font-weight:700">J4 ➔ J5 ➔ J2</span>
@@ -304,7 +319,7 @@ th{color:var(--muted);font-weight:600}
           <span class="tag">5 Smart Junctions</span>
         </div>
         <div id="signals" class="signalgrid"></div>
-        <div class="foot">Change signal lights or traffic density: the 3D city traffic lights and Dijkstra route update in real-time.</div>
+        <div class="foot">Change signal lights or traffic density: the 3D traffic lights and vehicles respond immediately with realistic stopping physics.</div>
       </div>
 
       <!-- Vehicle Registry & Blacklist -->
@@ -522,13 +537,13 @@ th{color:var(--muted);font-weight:600}
       <div class="panel">
         <div class="pt">3D Digital Twin & ITS Architecture</div>
         <p class="muted" style="font-size:12px;line-height:1.5;margin-top:8px">
-          <b>Web 3D Implementation:</b> Uses hardware-accelerated WebGL via Three.js with real-time shadow casting, procedural city blocks, dynamic traffic signal lights, and a 3D vehicle agent moving along the Dijkstra optimal path spline. Native in browser with zero server/plugin overhead.
+          <b>Realistic Physics & Rendering:</b> Three.js WebGL engine with procedural building textures, PBR asphalt shaders, zebra crossings, hooded signal visors, working vehicle headlights/taillights, and distance-based vehicle queue stopping logic.
         </p>
       </div>
     </section>
   </div>
 
-  <div class="foot">NETRA Traffic Command • 3D Intelligent Transportation Systems • Dijkstra Dynamic Routing</div>
+  <div class="foot">NETRA Traffic Command • 3D Intelligent Transportation Systems • Realistic Digital Twin</div>
 </main>
 </div>
 
@@ -558,7 +573,6 @@ let alerts = [];
 let logs = [];
 let currentViewMode = '3d';
 
-// Coordinates for 2D map
 const pos2D = {
   J1: [140, 100],
   J2: [360, 100],
@@ -567,7 +581,6 @@ const pos2D = {
   J5: [360, 300]
 };
 
-// Road Network Graph Edges
 const roadEdges = [
   { u: 'J1', v: 'J2', road: 'Main Bazaar - Mall Rd', distKm: 2.2, speedKmh: 45 },
   { u: 'J2', v: 'J3', road: 'Civil Hospital Road', distKm: 2.2, speedKmh: 40 },
@@ -769,7 +782,7 @@ function evaluateAllCandidatePaths(startId, endId, criterion = 'time', isPriorit
 }
 
 // ==========================================
-// 3. THREE.JS 3D CITY ENGINE & SIMULATION
+// 3. HIGH-REALISM THREE.JS 3D CITY ENGINE
 // ==========================================
 
 let scene3D, camera3D, renderer3D, controls3D;
@@ -780,257 +793,479 @@ let ambulanceVehicle3D = null;
 let civilianCars3D = [];
 let routeSpline3D = null;
 let ambulanceProgress = 0;
-let is3DActive = true;
 let isFollowAmbulance = false;
+let streetLightsList = [];
+let sunLight, ambientLight, hemiLight;
+let chevronTexture = null;
+let destPin3D = null;
 
-// 3D coordinate mapping (Center is 0,0,0)
 const pos3D = {
-  J1: new THREE.Vector3(-55, 0.2, -25),
-  J2: new THREE.Vector3(0, 0.2, -25),
-  J3: new THREE.Vector3(55, 0.2, -25),
-  J4: new THREE.Vector3(-55, 0.2, 25),
-  J5: new THREE.Vector3(0, 0.2, 25),
-  EAST_BYPASS: new THREE.Vector3(55, 0.2, 25)
+  J1: new THREE.Vector3(-55, 0.25, -25),
+  J2: new THREE.Vector3(0, 0.25, -25),
+  J3: new THREE.Vector3(55, 0.25, -25),
+  J4: new THREE.Vector3(-55, 0.25, 25),
+  J5: new THREE.Vector3(0, 0.25, 25),
+  EAST_BYPASS: new THREE.Vector3(55, 0.25, 25)
 };
+
+// Procedural Illuminated Building Facade Texture
+function createBuildingTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 128;
+  canvas.height = 256;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#0a121c';
+  ctx.fillRect(0, 0, 128, 256);
+
+  // Horizontal floor dividers
+  ctx.fillStyle = '#14202e';
+  for (let y = 0; y < 256; y += 14) {
+    ctx.fillRect(0, y, 128, 2);
+  }
+
+  // Office windows
+  for (let y = 3; y < 256; y += 14) {
+    for (let x = 4; x < 128; x += 11) {
+      const r = Math.random();
+      if (r > 0.52) {
+        if (r > 0.88) ctx.fillStyle = '#fef08a'; // Warm Gold
+        else if (r > 0.68) ctx.fillStyle = '#7dd3fc'; // Cyan Glass
+        else ctx.fillStyle = '#e2e8f0'; // Warm White
+      } else {
+        ctx.fillStyle = '#060a10'; // Dark Unlit Window
+      }
+      ctx.fillRect(x, y, 7, 9);
+    }
+  }
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.RepeatWrapping;
+  return tex;
+}
+
+// Procedural Animated Chevron Navigation Texture
+function createChevronTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 64;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, 256, 64);
+
+  for (let i = 0; i < 4; i++) {
+    const x = i * 64 + 32;
+    ctx.beginPath();
+    ctx.moveTo(x - 18, 12);
+    ctx.lineTo(x + 14, 32);
+    ctx.lineTo(x - 18, 52);
+    ctx.lineWidth = 12;
+    ctx.strokeStyle = '#ff9e3b';
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+  }
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(16, 1);
+  return tex;
+}
 
 function init3D() {
   const container = document.getElementById('threeCanvasContainer');
   if (!container || typeof THREE === 'undefined') {
-    console.warn('Three.js not available, falling back to 2D view');
     switchView('2d');
     return;
   }
 
   const width = container.clientWidth || 800;
-  const height = container.clientHeight || 460;
+  const height = container.clientHeight || 490;
 
-  // Scene & Fog
   scene3D = new THREE.Scene();
-  scene3D.background = new THREE.Color(0x07111e);
-  scene3D.fog = new THREE.FogExp2(0x07111e, 0.007);
+  scene3D.background = new THREE.Color(0x050b14);
+  scene3D.fog = new THREE.FogExp2(0x050b14, 0.0065);
 
-  // Camera
   camera3D = new THREE.PerspectiveCamera(45, width / height, 0.5, 600);
-  camera3D.position.set(-68, 55, 68);
+  camera3D.position.set(-68, 54, 68);
 
-  // Renderer
-  renderer3D = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+  renderer3D = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
   renderer3D.setSize(width, height);
   renderer3D.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer3D.shadowMap.enabled = true;
   renderer3D.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer3D.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer3D.toneMappingExposure = 1.15;
   container.appendChild(renderer3D.domElement);
 
-  // OrbitControls
   if (typeof THREE.OrbitControls !== 'undefined') {
     controls3D = new THREE.OrbitControls(camera3D, renderer3D.domElement);
     controls3D.enableDamping = true;
     controls3D.dampingFactor = 0.05;
     controls3D.maxPolarAngle = Math.PI / 2.05;
-    controls3D.minDistance = 15;
+    controls3D.minDistance = 12;
     controls3D.maxDistance = 220;
     controls3D.target.set(0, 0, 0);
   }
 
-  // Lighting
-  const ambient = new THREE.AmbientLight(0x406085, 0.85);
-  scene3D.add(ambient);
+  // Lights Setup
+  ambientLight = new THREE.AmbientLight(0x28405e, 0.9);
+  scene3D.add(ambientLight);
 
-  const sun = new THREE.DirectionalLight(0xddeeff, 1.2);
-  sun.position.set(60, 95, 45);
-  sun.castShadow = true;
-  sun.shadow.mapSize.width = 1024;
-  sun.shadow.mapSize.height = 1024;
-  sun.shadow.camera.near = 10;
-  sun.shadow.camera.far = 250;
-  const d = 90;
-  sun.shadow.camera.left = -d;
-  sun.shadow.camera.right = d;
-  sun.shadow.camera.top = d;
-  sun.shadow.camera.bottom = -d;
-  scene3D.add(sun);
+  hemiLight = new THREE.HemisphereLight(0x386088, 0x07111c, 0.7);
+  scene3D.add(hemiLight);
 
-  const hemi = new THREE.HemisphereLight(0x2d4f7c, 0x07101d, 0.6);
-  scene3D.add(hemi);
+  sunLight = new THREE.DirectionalLight(0xdceaff, 1.25);
+  sunLight.position.set(65, 95, 45);
+  sunLight.castShadow = true;
+  sunLight.shadow.mapSize.width = 2048;
+  sunLight.shadow.mapSize.height = 2048;
+  sunLight.shadow.camera.near = 10;
+  sunLight.shadow.camera.far = 260;
+  const d = 95;
+  sunLight.shadow.camera.left = -d;
+  sunLight.shadow.camera.right = d;
+  sunLight.shadow.camera.top = d;
+  sunLight.shadow.camera.bottom = -d;
+  sunLight.shadow.bias = -0.0005;
+  scene3D.add(sunLight);
 
-  // Build Environment
-  build3DGroundAndRoads();
-  build3DCityBuildings();
-  build3DJunctionTrafficLights();
-  build3DAmbulance();
-  build3DCivilianTraffic();
+  chevronTexture = createChevronTexture();
 
-  // Resize Listener
+  // Environment Construction
+  buildRealisticGroundAndRoads();
+  buildRealisticBuildings();
+  buildRealisticTrafficLights();
+  buildRealisticAmbulance();
+  buildRealisticCivilianTraffic();
+  buildDestinationPin();
+
   window.addEventListener('resize', on3DWindowResize);
-
-  // Start Animation Loop
   animate3D();
 }
 
-function build3DGroundAndRoads() {
-  // Ground Terrain
-  const groundGeo = new THREE.PlaneGeometry(280, 220);
-  const groundMat = new THREE.MeshStandardMaterial({ color: 0x08101a, roughness: 0.95 });
+// Build Road Network with Curbs, Sidewalks, Zebra Crossings & Stop Bars
+function buildRealisticGroundAndRoads() {
+  const groundGeo = new THREE.PlaneGeometry(300, 240);
+  const groundMat = new THREE.MeshStandardMaterial({ color: 0x060c15, roughness: 0.95 });
   const ground = new THREE.Mesh(groundGeo, groundMat);
   ground.rotation.x = -Math.PI / 2;
   ground.receiveShadow = true;
   scene3D.add(ground);
 
-  // Subtle Holographic Grid
-  const grid = new THREE.GridHelper(280, 56, 0x182c44, 0x0f1d2e);
-  grid.position.y = 0.02;
-  scene3D.add(grid);
+  const asphaltMat = new THREE.MeshStandardMaterial({ color: 0x141b24, roughness: 0.85 });
+  const sidewalkMat = new THREE.MeshStandardMaterial({ color: 0x273547, roughness: 0.7 });
+  const curbMat = new THREE.MeshStandardMaterial({ color: 0x3b4c60, roughness: 0.6 });
+  const yellowLineMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+  const whiteLineMat = new THREE.MeshBasicMaterial({ color: 0xe2e8f0 });
+  const zebraMat = new THREE.MeshBasicMaterial({ color: 0xf1f5f9 });
 
-  // Road Corridors Material
-  const roadMat = new THREE.MeshStandardMaterial({ color: 0x16202e, roughness: 0.8 });
-  const stripeMat = new THREE.MeshBasicMaterial({ color: 0x6a819e });
-
-  function createRoadSegment(x, z, width, length, isRotated = false) {
-    const rGeo = new THREE.PlaneGeometry(width, length);
-    const road = new THREE.Mesh(rGeo, roadMat);
+  function createRoadCorridor(x, z, length, isHorizontal = true) {
+    const rw = 10.0;
+    // 1. Asphalt Bed
+    const rGeo = new THREE.PlaneGeometry(rw, length);
+    const road = new THREE.Mesh(rGeo, asphaltMat);
     road.rotation.x = -Math.PI / 2;
-    if (isRotated) road.rotation.z = Math.PI / 2;
+    if (isHorizontal) road.rotation.z = Math.PI / 2;
     road.position.set(x, 0.08, z);
     road.receiveShadow = true;
     scene3D.add(road);
 
-    // Center Dashed Stripe
-    const numDashes = Math.floor(length / 5);
-    for (let i = 0; i < numDashes; i++) {
-      if (i % 2 === 0) continue;
-      const sGeo = new THREE.PlaneGeometry(0.3, 2.4);
-      const stripe = new THREE.Mesh(sGeo, stripeMat);
-      stripe.rotation.x = -Math.PI / 2;
-      if (isRotated) {
-        stripe.rotation.z = Math.PI / 2;
-        stripe.position.set(x - length / 2 + i * 5, 0.1, z);
+    // 2. Concrete Curbs & Sidewalks on Both Sides
+    [-1, 1].forEach(side => {
+      // Raised Sidewalk
+      const swGeo = new THREE.BoxGeometry(2.4, 0.22, length);
+      const sw = new THREE.Mesh(swGeo, sidewalkMat);
+      // Curb Strip
+      const curbGeo = new THREE.BoxGeometry(0.3, 0.26, length);
+      const curb = new THREE.Mesh(curbGeo, curbMat);
+
+      if (isHorizontal) {
+        sw.rotation.y = Math.PI / 2;
+        curb.rotation.y = Math.PI / 2;
+        sw.position.set(x, 0.12, z + side * (rw / 2 + 1.2));
+        curb.position.set(x, 0.14, z + side * (rw / 2 + 0.15));
       } else {
-        stripe.position.set(x, 0.1, z - length / 2 + i * 5);
+        sw.position.set(x + side * (rw / 2 + 1.2), 0.12, z);
+        curb.position.set(x + side * (rw / 2 + 0.15), 0.14, z);
       }
-      scene3D.add(stripe);
+      sw.receiveShadow = true;
+      curb.receiveShadow = true;
+      scene3D.add(sw);
+      scene3D.add(curb);
+    });
+
+    // 3. Double Solid Yellow Centerlines
+    [-0.2, 0.2].forEach(off => {
+      const yLineGeo = new THREE.PlaneGeometry(0.16, length);
+      const yLine = new THREE.Mesh(yLineGeo, yellowLineMat);
+      yLine.rotation.x = -Math.PI / 2;
+      if (isHorizontal) {
+        yLine.rotation.z = Math.PI / 2;
+        yLine.position.set(x, 0.1, z + off);
+      } else {
+        yLine.position.set(x + off, 0.1, z);
+      }
+      scene3D.add(yLine);
+    });
+
+    // 4. White Dashed Lane Dividers (Outer travel lanes)
+    [-2.6, 2.6].forEach(laneOff => {
+      const numDashes = Math.floor(length / 5.5);
+      for (let i = 0; i < numDashes; i++) {
+        if (i % 2 === 0) continue;
+        const dGeo = new THREE.PlaneGeometry(0.24, 2.4);
+        const dash = new THREE.Mesh(dGeo, whiteLineMat);
+        dash.rotation.x = -Math.PI / 2;
+        if (isHorizontal) {
+          dash.rotation.z = Math.PI / 2;
+          dash.position.set(x - length / 2 + i * 5.5, 0.1, z + laneOff);
+        } else {
+          dash.position.set(x + laneOff, 0.1, z - length / 2 + i * 5.5);
+        }
+        scene3D.add(dash);
+      }
+    });
+
+    // 5. Street Light Poles along the Sidewalk
+    const numLights = Math.floor(length / 28);
+    for (let i = 0; i < numLights; i++) {
+      const lPos = -length / 2 + 14 + i * 28;
+      createStreetLight(
+        isHorizontal ? x + lPos : x + (rw / 2 + 1.6),
+        isHorizontal ? z + (rw / 2 + 1.6) : z + lPos
+      );
     }
+  }
+
+  // Intersections: Create Zebra Crossings & White Stop Bars
+  function createJunctionMarkings(cx, cz) {
+    const approaches = [
+      { x: cx, z: cz - 7.2, rot: 0 },       // North
+      { x: cx, z: cz + 7.2, rot: 0 },       // South
+      { x: cx - 7.2, z: cz, rot: Math.PI / 2 }, // West
+      { x: cx + 7.2, z: cz, rot: Math.PI / 2 }  // East
+    ];
+
+    approaches.forEach(app => {
+      // White Stop Bar
+      const stopGeo = new THREE.PlaneGeometry(4.4, 0.65);
+      const stopBar = new THREE.Mesh(stopGeo, whiteLineMat);
+      stopBar.rotation.x = -Math.PI / 2;
+      stopBar.rotation.z = app.rot;
+      stopBar.position.set(app.x, 0.11, app.z);
+      scene3D.add(stopBar);
+
+      // Zebra Pedestrian Stripes
+      const numStripes = 6;
+      for (let s = -numStripes / 2; s < numStripes / 2; s++) {
+        const zGeo = new THREE.PlaneGeometry(0.5, 3.2);
+        const stripe = new THREE.Mesh(zGeo, zebraMat);
+        stripe.rotation.x = -Math.PI / 2;
+        stripe.rotation.z = app.rot;
+
+        if (app.rot === 0) {
+          stripe.position.set(app.x + s * 0.8 + 0.4, 0.11, app.z > cz ? app.z - 2.2 : app.z + 2.2);
+        } else {
+          stripe.position.set(app.x > cx ? app.x - 2.2 : app.x + 2.2, 0.11, app.z + s * 0.8 + 0.4);
+        }
+        scene3D.add(stripe);
+      }
+    });
   }
 
   // Horizontal Roads:
-  // 1. North Corridor (Z = -25, Main Bazaar / Mall Rd / Hospital Rd)
-  createRoadSegment(0, -25, 7.5, 160, true);
-  // 2. South Corridor (Z = 25, Ring Road Corridor)
-  createRoadSegment(0, 25, 7.5, 160, true);
+  createRoadCorridor(0, -25, 170, true);
+  createRoadCorridor(0, 25, 170, true);
 
   // Vertical Roads:
-  // 1. West Corridor (X = -55, Station Link)
-  createRoadSegment(-55, 0, 7.5, 80, false);
-  // 2. Central Corridor (X = 0, Central Ave)
-  createRoadSegment(0, 0, 7.5, 80, false);
-  // 3. East Corridor (X = 55, Hospital Bypass)
-  createRoadSegment(55, 0, 7.5, 80, false);
+  createRoadCorridor(-55, 0, 85, false);
+  createRoadCorridor(0, 0, 85, false);
+  createRoadCorridor(55, 0, 85, false);
+
+  // Crosswalks & Stop Bars for all junctions
+  createJunctionMarkings(-55, -25);
+  createJunctionMarkings(0, -25);
+  createJunctionMarkings(55, -25);
+  createJunctionMarkings(-55, 25);
+  createJunctionMarkings(0, 25);
+  createJunctionMarkings(55, 25);
 }
 
-function build3DCityBuildings() {
-  const buildingMats = [
-    new THREE.MeshStandardMaterial({ color: 0x111c2a, roughness: 0.5, metalness: 0.3 }),
-    new THREE.MeshStandardMaterial({ color: 0x162438, roughness: 0.4, metalness: 0.4 }),
-    new THREE.MeshStandardMaterial({ color: 0x0f1824, roughness: 0.6, metalness: 0.2 })
+// Streetlight Post with Downward Illumination
+function createStreetLight(x, z) {
+  const poleMat = new THREE.MeshStandardMaterial({ color: 0x334455, roughness: 0.5 });
+  const post = new THREE.Group();
+  post.position.set(x, 0, z);
+
+  // Vertical Pole
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 7.5, 12), poleMat);
+  pole.position.y = 3.75;
+  pole.castShadow = true;
+  post.add(pole);
+
+  // Curved LED Luminaire Arm
+  const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 2.4, 12), poleMat);
+  arm.rotation.z = Math.PI / 2;
+  arm.position.set(-1.2, 7.3, 0);
+  post.add(arm);
+
+  // Emissive Light Head
+  const headMat = new THREE.MeshStandardMaterial({ color: 0xfff3d6, emissive: 0xfff3d6, emissiveIntensity: 1.2 });
+  const head = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.2, 0.4), headMat);
+  head.position.set(-2.2, 7.1, 0);
+  post.add(head);
+
+  // Downward Cone Spotlight
+  const light = new THREE.PointLight(0xffecd1, 0.85, 22, 1.8);
+  light.position.set(-2.2, 6.8, 0);
+  post.add(light);
+  streetLightsList.push(light);
+
+  scene3D.add(post);
+}
+
+// Realistic City Buildings with Illuminated Office Windows
+function buildRealisticBuildings() {
+  const windowTex = createBuildingTexture();
+  const facadeMats = [
+    new THREE.MeshStandardMaterial({ map: windowTex, roughness: 0.25, metalness: 0.65 }),
+    new THREE.MeshStandardMaterial({ map: windowTex, roughness: 0.35, metalness: 0.45, color: 0x93c5fd }),
+    new THREE.MeshStandardMaterial({ map: windowTex, roughness: 0.45, metalness: 0.35, color: 0x64748b })
   ];
-  const windowGlowMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true, transparent: true, opacity: 0.18 });
+  const roofMat = new THREE.MeshStandardMaterial({ color: 0x111927, roughness: 0.9 });
+  const metalPropsMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.8, roughness: 0.3 });
 
-  function spawnBlock(centerX, centerZ, w, d) {
-    const numB = 4 + Math.floor(Math.random() * 4);
-    for (let i = 0; i < numB; i++) {
-      const bx = centerX + (Math.random() - 0.5) * (w - 7);
-      const bz = centerZ + (Math.random() - 0.5) * (d - 7);
-      const bw = 5 + Math.random() * 6;
-      const bd = 5 + Math.random() * 6;
-      const bh = 9 + Math.random() * 22;
+  function spawnBuilding(bx, bz, bw, bd, bh) {
+    const group = new THREE.Group();
+    group.position.set(bx, 0, bz);
 
-      const mat = buildingMats[Math.floor(Math.random() * buildingMats.length)];
-      const bGeo = new THREE.BoxGeometry(bw, bh, bd);
-      const bMesh = new THREE.Mesh(bGeo, mat);
-      bMesh.position.set(bx, bh / 2, bz);
-      bMesh.castShadow = true;
-      bMesh.receiveShadow = true;
-      scene3D.add(bMesh);
+    // Tower Main Volume
+    const bMat = facadeMats[Math.floor(Math.random() * facadeMats.length)];
+    const bGeo = new THREE.BoxGeometry(bw, bh, bd);
+    const bMesh = new THREE.Mesh(bGeo, bMat);
+    bMesh.position.y = bh / 2;
+    bMesh.castShadow = true;
+    bMesh.receiveShadow = true;
+    group.add(bMesh);
 
-      // Wireframe overlay for glowing cyber windows
-      const wireMesh = new THREE.Mesh(bGeo, windowGlowMat);
-      wireMesh.position.copy(bMesh.position);
-      scene3D.add(wireMesh);
+    // Rooftop Mechanical Penthouse / HVAC Units
+    const phGeo = new THREE.BoxGeometry(bw * 0.55, 2.5, bd * 0.55);
+    const ph = new THREE.Mesh(phGeo, roofMat);
+    ph.position.y = bh + 1.25;
+    group.add(ph);
+
+    // Rooftop Antenna / Water Tanks
+    if (Math.random() > 0.4) {
+      const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.15, 6, 8), metalPropsMat);
+      ant.position.set(bw * 0.2, bh + 5.5, bd * 0.2);
+      group.add(ant);
+    }
+
+    scene3D.add(group);
+  }
+
+  function spawnQuadrant(centerX, centerZ, w, d) {
+    const rows = 2, cols = 3;
+    const stepX = w / cols, stepZ = d / rows;
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const bx = centerX - w / 2 + stepX * (c + 0.5) + (Math.random() - 0.5) * 3;
+        const bz = centerZ - d / 2 + stepZ * (r + 0.5) + (Math.random() - 0.5) * 3;
+        const bw = stepX * 0.72;
+        const bd = stepZ * 0.72;
+        const bh = 14 + Math.random() * 26;
+        spawnBuilding(bx, bz, bw, bd, bh);
+      }
     }
   }
 
-  // Four interior city quadrants
-  spawnBlock(-27, -12, 42, 18);
-  spawnBlock(27, -12, 42, 18);
-  spawnBlock(-27, 12, 42, 18);
-  spawnBlock(27, 12, 42, 18);
+  // 4 Core City Quadrants
+  spawnQuadrant(-27, -12, 38, 14);
+  spawnQuadrant(27, -12, 38, 14);
+  spawnQuadrant(-27, 12, 38, 14);
+  spawnQuadrant(27, 12, 38, 14);
 
-  // Outer city perimeter blocks
-  spawnBlock(-27, -42, 42, 18);
-  spawnBlock(27, -42, 42, 18);
-  spawnBlock(-27, 42, 42, 18);
-  spawnBlock(27, 42, 42, 18);
-  spawnBlock(-75, 0, 24, 70);
-  spawnBlock(75, 0, 24, 70);
+  // Outer Perimeter City Blocks
+  spawnQuadrant(-27, -42, 38, 14);
+  spawnQuadrant(27, -42, 38, 14);
+  spawnQuadrant(-27, 42, 38, 14);
+  spawnQuadrant(27, 42, 38, 14);
+  spawnQuadrant(-78, 0, 18, 65);
+  spawnQuadrant(78, 0, 18, 65);
 }
 
-function build3DJunctionTrafficLights() {
-  const poleMat = new THREE.MeshStandardMaterial({ color: 0x223244, roughness: 0.5 });
-  const housingMat = new THREE.MeshStandardMaterial({ color: 0x0d1520, roughness: 0.4 });
+// Realistic 3-Aspect Traffic Signal Gantries with Hooded Visors
+function buildRealisticTrafficLights() {
+  const gantryMat = new THREE.MeshStandardMaterial({ color: 0x1f2937, roughness: 0.4, metalness: 0.6 });
+  const housingMat = new THREE.MeshStandardMaterial({ color: 0x090d14, roughness: 0.5 });
+  const visorMat = new THREE.MeshStandardMaterial({ color: 0x03060a, roughness: 0.6 });
 
   js.forEach(j => {
     const p = pos3D[j.id];
     const group = new THREE.Group();
-    group.position.set(p.x + 4.2, 0, p.z - 4.2);
+    group.position.set(p.x + 5.5, 0, p.z - 5.5);
 
-    // Vertical Gantry Pole
-    const poleGeo = new THREE.CylinderGeometry(0.25, 0.3, 7.5, 12);
-    const pole = new THREE.Mesh(poleGeo, poleMat);
-    pole.position.y = 3.75;
+    // Tubular Steel Mast Pole
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.35, 8.5, 16), gantryMat);
+    pole.position.y = 4.25;
     pole.castShadow = true;
     group.add(pole);
 
-    // Mast Arm extending over road
-    const armGeo = new THREE.CylinderGeometry(0.18, 0.18, 4.2, 12);
-    const arm = new THREE.Mesh(armGeo, poleMat);
+    // Cantilever Overhead Arm stretching over intersection
+    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 5.8, 16), gantryMat);
     arm.rotation.z = Math.PI / 2;
-    arm.position.set(-2.1, 7.2, 0);
+    arm.position.set(-2.9, 8.1, 0);
     group.add(arm);
 
-    // Traffic Signal Box Housing
-    const boxGeo = new THREE.BoxGeometry(0.9, 2.5, 0.9);
-    const box = new THREE.Mesh(boxGeo, housingMat);
-    box.position.set(-3.6, 6.2, 0);
+    // Signal Housing Box
+    const box = new THREE.Mesh(new THREE.BoxGeometry(1.0, 2.8, 0.9), housingMat);
+    box.position.set(-4.6, 7.0, 0);
     group.add(box);
 
-    // 3 Bulbs: Red, Yellow, Green
-    const bulbGeo = new THREE.SphereGeometry(0.3, 16, 16);
-    
-    const redMat = new THREE.MeshStandardMaterial({ color: 0x3a1118, emissive: 0x000000 });
+    // Hooded Visors & Bulbs for Red, Yellow, Green
+    const bulbGeo = new THREE.SphereGeometry(0.32, 20, 20);
+    const visorGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.45, 16, 1, true, 0, Math.PI);
+    visorGeo.rotateX(Math.PI / 2);
+
+    const redMat = new THREE.MeshStandardMaterial({ color: 0x33080e, emissive: 0x000000, roughness: 0.2 });
     const redBulb = new THREE.Mesh(bulbGeo, redMat);
-    redBulb.position.set(-3.6, 6.9, 0.45);
+    redBulb.position.set(-4.6, 7.8, 0.46);
     group.add(redBulb);
 
-    const yelMat = new THREE.MeshStandardMaterial({ color: 0x3a2c0f, emissive: 0x000000 });
+    const rVisor = new THREE.Mesh(visorGeo, visorMat);
+    rVisor.position.set(-4.6, 8.05, 0.65);
+    group.add(rVisor);
+
+    const yelMat = new THREE.MeshStandardMaterial({ color: 0x332508, emissive: 0x000000, roughness: 0.2 });
     const yelBulb = new THREE.Mesh(bulbGeo, yelMat);
-    yelBulb.position.set(-3.6, 6.2, 0.45);
+    yelBulb.position.set(-4.6, 7.0, 0.46);
     group.add(yelBulb);
 
-    const grnMat = new THREE.MeshStandardMaterial({ color: 0x0e3526, emissive: 0x000000 });
+    const yVisor = new THREE.Mesh(visorGeo, visorMat);
+    yVisor.position.set(-4.6, 7.25, 0.65);
+    group.add(yVisor);
+
+    const grnMat = new THREE.MeshStandardMaterial({ color: 0x08331d, emissive: 0x000000, roughness: 0.2 });
     const grnBulb = new THREE.Mesh(bulbGeo, grnMat);
-    grnBulb.position.set(-3.6, 5.5, 0.45);
+    grnBulb.position.set(-4.6, 6.2, 0.46);
     group.add(grnBulb);
 
-    // Dynamic Point Light for intersection
-    const pointLight = new THREE.PointLight(0x00ffaa, 1.2, 18);
-    pointLight.position.set(-3.6, 6.2, 1.5);
-    group.add(pointLight);
+    const gVisor = new THREE.Mesh(visorGeo, visorMat);
+    gVisor.position.set(-4.6, 6.45, 0.65);
+    group.add(gVisor);
 
-    // Junction Overhead Label Disc
-    const discGeo = new THREE.CylinderGeometry(2.2, 2.2, 0.2, 24);
-    const discMat = new THREE.MeshBasicMaterial({ color: 0x122238, transparent: true, opacity: 0.85 });
-    const disc = new THREE.Mesh(discGeo, discMat);
-    disc.position.set(-3.6, 8.8, 0);
-    group.add(disc);
+    // Active Signal Projection Light
+    const signalLight = new THREE.PointLight(0x00ffaa, 1.8, 22, 1.6);
+    signalLight.position.set(-4.6, 7.0, 2.2);
+    group.add(signalLight);
+
+    // Overhead Junction ID Badge Disc
+    const badgeGeo = new THREE.CylinderGeometry(2.4, 2.4, 0.25, 24);
+    const badgeMat = new THREE.MeshBasicMaterial({ color: 0x0e1c2e });
+    const badge = new THREE.Mesh(badgeGeo, badgeMat);
+    badge.position.set(-4.6, 9.8, 0);
+    group.add(badge);
 
     scene3D.add(group);
 
@@ -1038,7 +1273,7 @@ function build3DJunctionTrafficLights() {
       group,
       redBulb, yelBulb, grnBulb,
       redMat, yelMat, grnMat,
-      pointLight
+      signalLight
     };
   });
 
@@ -1052,143 +1287,222 @@ function update3DSignals() {
 
     if (j.phase === 'RED') {
       obj.redMat.emissive.setHex(0xff3355);
+      obj.redMat.emissiveIntensity = 2.4;
       obj.yelMat.emissive.setHex(0x000000);
       obj.grnMat.emissive.setHex(0x000000);
-      obj.pointLight.color.setHex(0xff3355);
-      obj.pointLight.intensity = 1.6;
+      obj.signalLight.color.setHex(0xff3355);
+      obj.signalLight.intensity = 2.2;
     } else if (j.phase === 'YELLOW') {
       obj.redMat.emissive.setHex(0x000000);
       obj.yelMat.emissive.setHex(0xffaa00);
+      obj.yelMat.emissiveIntensity = 2.2;
       obj.grnMat.emissive.setHex(0x000000);
-      obj.pointLight.color.setHex(0xffaa00);
-      obj.pointLight.intensity = 1.4;
+      obj.signalLight.color.setHex(0xffaa00);
+      obj.signalLight.intensity = 1.8;
     } else {
       obj.redMat.emissive.setHex(0x000000);
       obj.yelMat.emissive.setHex(0x000000);
       obj.grnMat.emissive.setHex(0x00ffaa);
-      obj.pointLight.color.setHex(0x00ffaa);
-      obj.pointLight.intensity = 1.6;
+      obj.grnMat.emissiveIntensity = 2.4;
+      obj.signalLight.color.setHex(0x00ffaa);
+      obj.signalLight.intensity = 2.2;
     }
   });
 }
 
-function build3DAmbulance() {
+// Realistic Emergency Ambulance with Working Headlights & Strobing Siren
+function buildRealisticAmbulance() {
   const ambGroup = new THREE.Group();
 
-  // White Chassis
-  const bodyMat = new THREE.MeshStandardMaterial({ color: 0xf5f7fa, roughness: 0.3 });
-  const bodyGeo = new THREE.BoxGeometry(2.2, 1.3, 4.4);
-  const body = new THREE.Mesh(bodyGeo, bodyMat);
-  body.position.y = 1.0;
-  body.castShadow = true;
-  ambGroup.add(body);
+  // White Aerodynamic Van Chassis
+  const whiteMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.25, metalness: 0.1 });
+  const cab = new THREE.Mesh(new THREE.BoxGeometry(2.3, 1.4, 2.2), whiteMat);
+  cab.position.set(0, 1.05, 1.3);
+  cab.castShadow = true;
+  ambGroup.add(cab);
 
-  // Red Cross Stripe
-  const stripeMat = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.3 });
-  const stripeGeo = new THREE.BoxGeometry(2.25, 0.35, 3.2);
-  const stripe = new THREE.Mesh(stripeGeo, stripeMat);
-  stripe.position.y = 1.05;
-  ambGroup.add(stripe);
+  const rearBox = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.8, 3.4), whiteMat);
+  rearBox.position.set(0, 1.25, -1.3);
+  rearBox.castShadow = true;
+  ambGroup.add(rearBox);
 
-  // Dark Windshield Glass
-  const glassMat = new THREE.MeshStandardMaterial({ color: 0x111c2e, roughness: 0.2 });
-  const glassGeo = new THREE.BoxGeometry(2.0, 0.65, 1.2);
-  const glass = new THREE.Mesh(glassGeo, glassMat);
-  glass.position.set(0, 1.4, 1.2);
-  ambGroup.add(glass);
+  // Red Emergency Stripes & Livery
+  const redDecalMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, roughness: 0.3 });
+  const stripeL = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.45, 4.4), redDecalMat);
+  stripeL.position.set(1.22, 1.2, -0.2);
+  ambGroup.add(stripeL);
 
-  // 4 Wheels
-  const wheelMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9 });
-  const wheelGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.35, 16);
+  const stripeR = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.45, 4.4), redDecalMat);
+  stripeR.position.set(-1.22, 1.2, -0.2);
+  ambGroup.add(stripeR);
+
+  // Windshield & Windows
+  const glassMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.1, metalness: 0.9 });
+  const windshield = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.75, 0.1), glassMat);
+  windshield.position.set(0, 1.35, 2.42);
+  windshield.rotation.x = -0.25;
+  ambGroup.add(windshield);
+
+  // Wheels with Alloy Rims
+  const tireMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.9 });
+  const rimMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.8, roughness: 0.3 });
+  const wheelGeo = new THREE.CylinderGeometry(0.44, 0.44, 0.38, 16);
   wheelGeo.rotateZ(Math.PI / 2);
-  const wheelPos = [[-1.15, 0.42, 1.4], [1.15, 0.42, 1.4], [-1.15, 0.42, -1.4], [1.15, 0.42, -1.4]];
-  wheelPos.forEach(wp => {
-    const w = new THREE.Mesh(wheelGeo, wheelMat);
-    w.position.set(...wp);
-    ambGroup.add(w);
+
+  [[-1.22, 0.44, 1.4], [1.22, 0.44, 1.4], [-1.22, 0.44, -1.6], [1.22, 0.44, -1.6]].forEach(wp => {
+    const tire = new THREE.Mesh(wheelGeo, tireMat);
+    tire.position.set(...wp);
+    tire.castShadow = true;
+    ambGroup.add(tire);
+
+    const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.4, 12), rimMat);
+    rim.rotation.z = Math.PI / 2;
+    rim.position.set(...wp);
+    ambGroup.add(rim);
   });
 
-  // Roof Emergency Beacon Lights (Flashing Red and Blue)
-  const beaconGeo = new THREE.BoxGeometry(0.35, 0.25, 0.7);
-  const beaconRedMat = new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff0000 });
-  const beaconBlueMat = new THREE.MeshStandardMaterial({ color: 0x0088ff, emissive: 0x0088ff });
-  
+  // Working Forward Headlights (White Spotlights)
+  const headMat = new THREE.MeshBasicMaterial({ color: 0xfffaed });
+  [-0.8, 0.8].forEach(hx => {
+    const hl = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.2, 0.1), headMat);
+    hl.position.set(hx, 0.85, 2.42);
+    ambGroup.add(hl);
+
+    const spot = new THREE.SpotLight(0xfffaed, 2.5, 45, Math.PI / 6, 0.3, 1.2);
+    spot.position.set(hx, 0.85, 2.5);
+    spot.target.position.set(hx, 0.2, 18);
+    ambGroup.add(spot);
+    ambGroup.add(spot.target);
+  });
+
+  // Rear Taillights
+  const tailMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+  [-0.9, 0.9].forEach(tx => {
+    const tl = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.25, 0.08), tailMat);
+    tl.position.set(tx, 0.9, -3.02);
+    ambGroup.add(tl);
+  });
+
+  // Dual Strobing Roof Lightbars (Red & Blue)
+  const beaconGeo = new THREE.BoxGeometry(0.4, 0.22, 0.9);
+  const beaconRedMat = new THREE.MeshStandardMaterial({ color: 0xff0033, emissive: 0xff0033, emissiveIntensity: 2.0 });
+  const beaconBlueMat = new THREE.MeshStandardMaterial({ color: 0x0088ff, emissive: 0x0088ff, emissiveIntensity: 2.0 });
+
   const bRed = new THREE.Mesh(beaconGeo, beaconRedMat);
-  bRed.position.set(-0.45, 1.8, 0.2);
+  bRed.position.set(-0.55, 2.25, 0.2);
   ambGroup.add(bRed);
 
   const bBlue = new THREE.Mesh(beaconGeo, beaconBlueMat);
-  bBlue.position.set(0.45, 1.8, 0.2);
+  bBlue.position.set(0.55, 2.25, 0.2);
   ambGroup.add(bBlue);
 
-  // Dynamic Emergency Beacon Light
-  const beaconLight = new THREE.PointLight(0xff0033, 2.0, 20);
-  beaconLight.position.set(0, 2.2, 0.2);
-  ambGroup.add(beaconLight);
+  const sirenLight = new THREE.PointLight(0xff0033, 2.8, 26, 1.4);
+  sirenLight.position.set(0, 2.8, 0.2);
+  ambGroup.add(sirenLight);
 
   scene3D.add(ambGroup);
 
   ambulanceVehicle3D = {
     group: ambGroup,
-    beaconLight,
+    sirenLight,
     bRed, bBlue,
     beaconRedMat, beaconBlueMat
   };
 }
 
-function build3DCivilianTraffic() {
-  const carColors = [0x2563eb, 0xf59e0b, 0x10b981, 0x94a3b8, 0xef4444, 0x8b5cf6];
-  const wheelMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9 });
-  const wheelGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.3, 12);
-  wheelGeo.rotateZ(Math.PI / 2);
+// Realistic Civilian Traffic with Stopping Physics & Brake Lights
+function buildRealisticCivilianTraffic() {
+  const carColors = [0x1e3a8a, 0xb45309, 0x047857, 0x334155, 0x991b1b, 0x475569];
+  const glassMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.1, metalness: 0.9 });
+  const headMat = new THREE.MeshBasicMaterial({ color: 0xfffaed });
 
-  // Create 8 civilian cars travelling along predefined road loops
-  for (let i = 0; i < 8; i++) {
+  const routes = [
+    { start: new THREE.Vector3(-55, 0, -25), end: new THREE.Vector3(55, 0, -25), targetJ: 'J2' },
+    { start: new THREE.Vector3(55, 0, 25), end: new THREE.Vector3(-55, 0, 25), targetJ: 'J5' },
+    { start: new THREE.Vector3(-55, 0, -25), end: new THREE.Vector3(-55, 0, 25), targetJ: 'J4' },
+    { start: new THREE.Vector3(0, 0, 25), end: new THREE.Vector3(0, 0, -25), targetJ: 'J2' },
+    { start: new THREE.Vector3(55, 0, 25), end: new THREE.Vector3(55, 0, -25), targetJ: 'J3' }
+  ];
+
+  for (let i = 0; i < 9; i++) {
     const col = carColors[i % carColors.length];
-    const cMat = new THREE.MeshStandardMaterial({ color: col, roughness: 0.4 });
+    const cMat = new THREE.MeshStandardMaterial({ color: col, roughness: 0.35, metalness: 0.4 });
     const cGroup = new THREE.Group();
 
-    const body = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.9, 3.6), cMat);
-    body.position.y = 0.75;
+    // Car Body Aerodynamic Profile
+    const body = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.85, 4.2), cMat);
+    body.position.y = 0.72;
     body.castShadow = true;
     cGroup.add(body);
 
-    const roof = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.6, 1.8), new THREE.MeshStandardMaterial({ color: 0x111c2e }));
-    roof.position.set(0, 1.3, -0.2);
-    cGroup.add(roof);
+    const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.65, 2.2), glassMat);
+    cabin.position.set(0, 1.35, -0.2);
+    cabin.castShadow = true;
+    cGroup.add(cabin);
 
-    [[-1.0, 0.35, 1.1], [1.0, 0.35, 1.1], [-1.0, 0.35, -1.1], [1.0, 0.35, -1.1]].forEach(wp => {
-      const w = new THREE.Mesh(wheelGeo, wheelMat);
-      w.position.set(...wp);
-      cGroup.add(w);
+    // Headlights
+    [-0.7, 0.7].forEach(hx => {
+      const hl = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.18, 0.1), headMat);
+      hl.position.set(hx, 0.65, 2.12);
+      cGroup.add(hl);
+    });
+
+    // Reactive Brake Lights
+    const brakeMat = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0xef4444, emissiveIntensity: 0.6 });
+    [-0.7, 0.7].forEach(tx => {
+      const tl = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.2, 0.1), brakeMat);
+      tl.position.set(tx, 0.7, -2.12);
+      cGroup.add(tl);
     });
 
     scene3D.add(cGroup);
 
-    // Route assignments for civilian cars
-    const routes = [
-      [-55, -25, 55, -25],  // Horizontal East on North Road
-      [55, 25, -55, 25],   // Horizontal West on South Road
-      [-55, -25, -55, 25], // Vertical South on West Road
-      [0, 25, 0, -25],     // Vertical North on Central Road
-      [55, 25, 55, -25]    // Vertical North on East Bypass
-    ];
-    const route = routes[i % routes.length];
-
+    const r = routes[i % routes.length];
     civilianCars3D.push({
       group: cGroup,
-      start: new THREE.Vector3(route[0], 0, route[1]),
-      end: new THREE.Vector3(route[2], 0, route[3]),
-      progress: (i * 0.18) % 1.0,
-      speed: 0.0025 + (i * 0.0004)
+      start: r.start.clone(),
+      end: r.end.clone(),
+      targetJ: r.targetJ,
+      progress: (i * 0.16) % 1.0,
+      baseSpeed: 0.0022 + (i * 0.0003),
+      currentSpeed: 0.0025,
+      brakeMat,
+      isStopped: false
     });
   }
 }
 
+// 3D Holographic Destination Map Pin
+function buildDestinationPin() {
+  const pinGroup = new THREE.Group();
+
+  const pinMat = new THREE.MeshStandardMaterial({ color: 0x31d0a0, emissive: 0x10b981, emissiveIntensity: 1.2 });
+  const head = new THREE.Mesh(new THREE.SphereGeometry(1.2, 20, 20), pinMat);
+  head.position.y = 11.2;
+  pinGroup.add(head);
+
+  const cone = new THREE.Mesh(new THREE.ConeGeometry(1.0, 2.4, 20), pinMat);
+  cone.rotation.x = Math.PI;
+  cone.position.y = 9.8;
+  pinGroup.add(cone);
+
+  // Ground Radar Pulse Ring
+  const ringGeo = new THREE.RingGeometry(1.5, 2.2, 24);
+  const ringMat = new THREE.MeshBasicMaterial({ color: 0x31d0a0, side: THREE.DoubleSide, transparent: true, opacity: 0.7 });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.rotation.x = -Math.PI / 2;
+  ring.position.y = 0.18;
+  pinGroup.add(ring);
+
+  pinGroup.visible = false;
+  scene3D.add(pinGroup);
+  destPin3D = { group: pinGroup, ringMat };
+}
+
+// High-Realism Dijkstra Navigation AR Ribbon on Road Surface
 function update3DRouteRibbon(dijkstraPath, altPath = null) {
   if (!scene3D) return;
 
-  // 1. Remove old route ribbons
   if (route3DMesh) {
     scene3D.remove(route3DMesh);
     route3DMesh.geometry.dispose();
@@ -1200,99 +1514,135 @@ function update3DRouteRibbon(dijkstraPath, altPath = null) {
     altRoute3DMesh = null;
   }
 
-  if (!dijkstraPath || dijkstraPath.length < 2) return;
+  if (!dijkstraPath || dijkstraPath.length < 2) {
+    if (destPin3D) destPin3D.group.visible = false;
+    return;
+  }
 
-  // Helper to map node sequence to 3D waypoint vectors
-  function getVectorPath(pList) {
-    const points = [];
+  function getPathVectors(pList) {
+    const pts = [];
     for (let i = 0; i < pList.length; i++) {
       const u = pList[i];
-      points.push(pos3D[u].clone());
-
+      pts.push(pos3D[u].clone());
       if (i < pList.length - 1) {
         const v = pList[i + 1];
-        // Insert East Bypass corner waypoint if routing J5 <-> J3
         if ((u === 'J5' && v === 'J3') || (u === 'J3' && v === 'J5')) {
-          points.push(pos3D.EAST_BYPASS.clone());
+          pts.push(pos3D.EAST_BYPASS.clone());
         }
       }
     }
-    // Lift ribbon slightly above road surface
-    points.forEach(pt => pt.y = 1.1);
-    return points;
+    pts.forEach(p => p.y = 0.32); // Flat just above road surface
+    return pts;
   }
 
-  // Draw Primary Dijkstra Optimal Route (Glowing Neon Amber Ribbon)
-  const pathPoints = getVectorPath(dijkstraPath);
-  routeSpline3D = new THREE.CatmullRomCurve3(pathPoints, false, 'catmullrom', 0.1);
+  // Draw Primary Dijkstra Optimal AR Chevron Path
+  const mainPts = getPathVectors(dijkstraPath);
+  routeSpline3D = new THREE.CatmullRomCurve3(mainPts, false, 'catmullrom', 0.12);
 
-  const tubeGeo = new THREE.TubeGeometry(routeSpline3D, 64, 0.65, 8, false);
-  const tubeMat = new THREE.MeshStandardMaterial({
-    color: 0xff8a24,
+  const tubeGeo = new THREE.TubeGeometry(routeSpline3D, 96, 1.25, 8, false);
+  const arMat = new THREE.MeshStandardMaterial({
+    map: chevronTexture,
+    color: 0xffaa44,
     emissive: 0xff7700,
-    emissiveIntensity: 1.2,
+    emissiveIntensity: 1.5,
     transparent: true,
-    opacity: 0.88,
+    opacity: 0.9,
     roughness: 0.2
   });
-  route3DMesh = new THREE.Mesh(tubeGeo, tubeMat);
+  route3DMesh = new THREE.Mesh(tubeGeo, arMat);
   scene3D.add(route3DMesh);
 
-  // Draw Alternative Congested Route (Subtle dashed crimson/red ribbon)
+  // Draw Congested Alternative Route in Dashed Crimson
   if (altPath && altPath.length > 1 && altPath.join('-') !== dijkstraPath.join('-')) {
-    const altPoints = getVectorPath(altPath);
-    altPoints.forEach(pt => pt.y = 0.5); // Slightly lower
-    const altCurve = new THREE.CatmullRomCurve3(altPoints, false, 'catmullrom', 0.1);
-    const altGeo = new THREE.TubeGeometry(altCurve, 48, 0.35, 6, false);
+    const altPts = getPathVectors(altPath);
+    altPts.forEach(p => p.y = 0.24);
+    const altCurve = new THREE.CatmullRomCurve3(altPts, false, 'catmullrom', 0.12);
+    const altGeo = new THREE.TubeGeometry(altCurve, 64, 0.6, 6, false);
     const altMat = new THREE.MeshStandardMaterial({
       color: 0xff4d6d,
-      emissive: 0xaa1133,
+      emissive: 0x991133,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.55,
       wireframe: true
     });
     altRoute3DMesh = new THREE.Mesh(altGeo, altMat);
     scene3D.add(altRoute3DMesh);
   }
 
-  // Reset ambulance progress along new spline
+  // Position 3D Destination Beacon Pin
+  if (destPin3D) {
+    const destId = dijkstraPath[dijkstraPath.length - 1];
+    const dPos = pos3D[destId];
+    destPin3D.group.position.set(dPos.x, 0, dPos.z);
+    destPin3D.group.visible = true;
+  }
+
   ambulanceProgress = 0;
 }
 
+// 60 FPS Simulation Loop with Realistic Vehicle Stopping Physics
 function animate3D() {
   requestAnimationFrame(animate3D);
 
-  // 1. Animate Ambulance along Dijkstra Optimal Route
+  const time = Date.now() * 0.001;
+
+  // 1. Animate Flowing Navigation Chevrons on Road
+  if (chevronTexture) {
+    chevronTexture.offset.x -= 0.016;
+  }
+
+  // 2. Animate 3D Destination Pin Bobbing & Radar Pulse
+  if (destPin3D && destPin3D.group.visible) {
+    destPin3D.group.position.y = Math.sin(time * 3.5) * 0.65;
+    destPin3D.ringMat.opacity = (Math.sin(time * 4) + 1) * 0.45;
+  }
+
+  // 3. Animate Emergency Ambulance along Dijkstra Path
   if (ambulanceVehicle3D && routeSpline3D) {
-    ambulanceProgress += 0.0035;
+    ambulanceProgress += 0.0036;
     if (ambulanceProgress > 1.0) ambulanceProgress = 0;
 
     const pos = routeSpline3D.getPointAt(ambulanceProgress);
     ambulanceVehicle3D.group.position.copy(pos);
 
-    // Orient vehicle towards road tangent
     const tangent = routeSpline3D.getTangentAt(ambulanceProgress);
     const lookTarget = pos.clone().add(tangent);
     ambulanceVehicle3D.group.lookAt(lookTarget);
 
-    // Flashing emergency beacons (4 Hz flash)
-    const time = Date.now() * 0.009;
-    const isRedFlash = Math.sin(time) > 0;
-    ambulanceVehicle3D.beaconRedMat.emissiveIntensity = isRedFlash ? 2.5 : 0.2;
-    ambulanceVehicle3D.beaconBlueMat.emissiveIntensity = !isRedFlash ? 2.5 : 0.2;
-    ambulanceVehicle3D.beaconLight.color.setHex(isRedFlash ? 0xff0033 : 0x0088ff);
+    // Alternating 4 Hz Strobing Roof Beacons
+    const isRedFlash = Math.sin(time * 16) > 0;
+    ambulanceVehicle3D.beaconRedMat.emissiveIntensity = isRedFlash ? 3.0 : 0.15;
+    ambulanceVehicle3D.beaconBlueMat.emissiveIntensity = !isRedFlash ? 3.0 : 0.15;
+    ambulanceVehicle3D.sirenLight.color.setHex(isRedFlash ? 0xff0033 : 0x0088ff);
 
-    // Camera follow mode
+    // Chase Camera Mode
     if (isFollowAmbulance && controls3D) {
-      const camOffset = tangent.clone().multiplyScalar(-18).add(new THREE.Vector3(0, 10, 0));
-      camera3D.position.lerp(pos.clone().add(camOffset), 0.08);
-      controls3D.target.lerp(pos, 0.08);
+      const camOffset = tangent.clone().multiplyScalar(-19).add(new THREE.Vector3(0, 11, 0));
+      camera3D.position.lerp(pos.clone().add(camOffset), 0.09);
+      controls3D.target.lerp(pos, 0.09);
     }
   }
 
-  // 2. Animate Civilian Traffic Cars
+  // 4. Realistic Civilian Vehicles with Signal Detection & Stopping Physics
   civilianCars3D.forEach(car => {
-    car.progress += car.speed;
+    const targetJunction = js.find(j => j.id === car.targetJ);
+    const isRedOrYellow = targetJunction && (targetJunction.phase === 'RED' || targetJunction.phase === 'YELLOW');
+
+    // Distance to approach stop bar (at progress ~0.45)
+    const distToStop = 0.45 - car.progress;
+    if (isRedOrYellow && distToStop > 0 && distToStop < 0.18) {
+      // Smooth deceleration to stop line
+      car.currentSpeed *= 0.88;
+      car.isStopped = true;
+      car.brakeMat.emissiveIntensity = 2.5; // Bright red brake lights on!
+    } else {
+      // Smooth acceleration back to cruising speed
+      car.currentSpeed = Math.min(car.baseSpeed, car.currentSpeed + 0.0001);
+      car.isStopped = false;
+      car.brakeMat.emissiveIntensity = 0.6; // Normal taillight
+    }
+
+    car.progress += car.currentSpeed;
     if (car.progress > 1.0) car.progress = 0;
 
     const curPos = new THREE.Vector3().lerpVectors(car.start, car.end, car.progress);
@@ -1300,10 +1650,7 @@ function animate3D() {
     car.group.lookAt(car.end);
   });
 
-  // 3. Update Camera Controls
   if (controls3D) controls3D.update();
-
-  // 4. Render 3D Scene
   if (renderer3D && scene3D && camera3D) {
     renderer3D.render(scene3D, camera3D);
   }
@@ -1325,24 +1672,71 @@ function setCamPreset(type) {
   isFollowAmbulance = false;
 
   if (type === 'iso') {
-    camera3D.position.set(-68, 55, 68);
+    camera3D.position.set(-68, 54, 68);
     controls3D.target.set(0, 0, 0);
   } else if (type === 'top') {
-    camera3D.position.set(0, 110, 0.1);
+    camera3D.position.set(0, 115, 0.1);
     controls3D.target.set(0, 0, 0);
   } else if (type === 'driver') {
     isFollowAmbulance = true;
     toast('Camera locked to Emergency Ambulance');
     return;
+  } else if (type === 'street') {
+    camera3D.position.set(-35, 12, 10);
+    controls3D.target.set(0, 2, 0);
   } else if (type === 'reset') {
-    camera3D.position.set(-68, 55, 68);
+    camera3D.position.set(-68, 54, 68);
     controls3D.target.set(0, 0, 0);
   }
   controls3D.update();
   toast(`Camera view: ${type.toUpperCase()}`);
 }
 
-// Toggle between 3D and 2D Schematic Views
+// Lighting & Environment Presets (Day / Dusk / Night)
+function setLightingPreset(mode) {
+  const bNight = document.getElementById('btnLightNight');
+  const bDusk = document.getElementById('btnLightDusk');
+  const bDay = document.getElementById('btnLightDay');
+  bNight.style.background = '#1a2b42';
+  bDusk.style.background = '#1a2b42';
+  bDay.style.background = '#1a2b42';
+
+  if (mode === 'night') {
+    bNight.style.background = '#2369cf';
+    scene3D.background.setHex(0x050b14);
+    scene3D.fog.color.setHex(0x050b14);
+    ambientLight.color.setHex(0x28405e);
+    ambientLight.intensity = 0.85;
+    sunLight.intensity = 0.5;
+    sunLight.color.setHex(0x60a5fa);
+    streetLightsList.forEach(l => l.intensity = 0.95);
+    renderer3D.toneMappingExposure = 1.15;
+    toast('🌙 Night Operations mode active');
+  } else if (mode === 'dusk') {
+    bDusk.style.background = '#2369cf';
+    scene3D.background.setHex(0x1a121d);
+    scene3D.fog.color.setHex(0x1a121d);
+    ambientLight.color.setHex(0xd97706);
+    ambientLight.intensity = 1.1;
+    sunLight.intensity = 1.6;
+    sunLight.color.setHex(0xf97316);
+    streetLightsList.forEach(l => l.intensity = 0.6);
+    renderer3D.toneMappingExposure = 1.3;
+    toast('🌆 Golden Hour / Dusk mode active');
+  } else {
+    bDay.style.background = '#2369cf';
+    scene3D.background.setHex(0x0e2338);
+    scene3D.fog.color.setHex(0x0e2338);
+    ambientLight.color.setHex(0xffffff);
+    ambientLight.intensity = 1.4;
+    sunLight.intensity = 2.2;
+    sunLight.color.setHex(0xfffaed);
+    streetLightsList.forEach(l => l.intensity = 0.0);
+    renderer3D.toneMappingExposure = 1.4;
+    toast('☀️ Clear Daylight mode active');
+  }
+}
+
 function switchView(mode) {
   currentViewMode = mode;
   const v3d = document.getElementById('view3dWrap');
@@ -1356,7 +1750,7 @@ function switchView(mode) {
     b3d.className = 'view-switch-btn active';
     b2d.className = 'view-switch-btn';
     on3DWindowResize();
-    toast('3D Game View active');
+    toast('3D Digital Twin active');
   } else {
     v3d.style.display = 'none';
     v2d.style.display = 'block';
@@ -1430,14 +1824,11 @@ function runDijkstra(showToastNotice = false) {
     return;
   }
 
-  // 1. Run Dijkstra Algorithm
   const dijkstraResult = dijkstra(start, end, criterion, isPriority);
   currentDijkstraResult = dijkstraResult;
 
-  // 2. Evaluate all candidate paths for comparison
   const candidatePaths = evaluateAllCandidatePaths(start, end, criterion, isPriority);
 
-  // 3. Compute Time Saved vs alternative congested route
   let alternatePath = null;
   let timeSavedMin = 0;
   let timeSavedPercent = 0;
@@ -1454,7 +1845,6 @@ function runDijkstra(showToastNotice = false) {
     ? Math.round((dijkstraResult.totalDistKm / (dijkstraResult.totalTimeMin / 60)))
     : 0;
 
-  // 4. Update UI Route Cards & HUD
   const pathNodes = dijkstraResult.path;
   const seqHtml = pathNodes.map((id, i) => {
     const isStart = i === 0;
@@ -1485,7 +1875,6 @@ function runDijkstra(showToastNotice = false) {
     document.getElementById('timeSavedDesc').textContent = `Direct single-path corridor:`;
   }
 
-  // 5. Update Candidate Paths Table
   document.getElementById('candidatePathsBody').innerHTML = candidatePaths.map(cp => {
     const isOptimal = cp.path.join('-') === dijkstraResult.path.join('-');
     const diff = Math.round((cp.totalTimeMin - dijkstraResult.totalTimeMin) * 10) / 10;
@@ -1501,7 +1890,6 @@ function runDijkstra(showToastNotice = false) {
     </tr>`;
   }).join('');
 
-  // 6. Update Turn-by-Turn Breakdown Table
   document.getElementById('segmentsBody').innerHTML = dijkstraResult.segments.map(seg => {
     const lightPill = seg.phase === 'GREEN'
       ? '<span style="color:var(--green)">● GRN</span>'
@@ -1517,7 +1905,6 @@ function runDijkstra(showToastNotice = false) {
     </tr>`;
   }).join('');
 
-  // 7. Update Narrative Notice
   const avoidedNote = alternatePath && timeSavedMin > 0
     ? ` Bypassed slower path via <b>${alternatePath.path.join('➔')}</b>, saving <b>${timeSavedMin} minutes</b>.`
     : '';
@@ -1525,7 +1912,6 @@ function runDijkstra(showToastNotice = false) {
     `<b>Dijkstra Route Selected:</b> <b>${dijkstraResult.path.join(' ➔ ')}</b> (${dijkstraResult.totalDistKm} km, estimated <b>${dijkstraResult.totalTimeMin} min</b>).${avoidedNote}`;
   document.getElementById('rstatus').textContent = `Dijkstra: ${dijkstraResult.totalTimeMin} min (Saved ${timeSavedMin}m)`;
 
-  // 8. Update 3D Visualizer & 2D Map
   update3DRouteRibbon(dijkstraResult.path, alternatePath ? alternatePath.path : null);
   renderMap2D(alternatePath ? alternatePath.path : null);
 
@@ -1810,7 +2196,7 @@ setInterval(tick, 1000);
 tick();
 init3D();
 render();
-alertMsg('NETRA Traffic System • 3D City Twin & Dijkstra Engine active.');
+alertMsg('NETRA Traffic System • Realistic 3D Digital Twin & Dijkstra Engine active.');
 </script>
 </body>
 </html>
