@@ -11,7 +11,7 @@ echo ===================================================================
 echo.
 echo Select a checkpoint to switch to:
 echo.
-echo [1] v7.0-open-boulevards-spat  (Current: 4-lane boulevards, SPaT lights, restored ETA)
+echo [1] v8.0-restored-ui           (HEAD: Restored sleek command-center UI/UX with working ETA)
 echo [2] v6.0-cctv-llm              (CCTV surveillance cameras, HUD & Gemini Copilot)
 echo [3] v5.0-7signals              (7 synchronized intersections & Webster cycle)
 echo [4] v4.0-3d-realistic          (High-fidelity 3D digital twin)
@@ -24,8 +24,8 @@ echo.
 set /p choice="Enter option (1-8 or Q): "
 
 if /i "%choice%"=="1" (
-    git checkout v7.0-open-boulevards-spat
-    echo Switched to checkpoint v7.0-open-boulevards-spat!
+    git checkout v8.0-restored-ui
+    echo Switched to checkpoint v8.0-restored-ui!
     pause
     goto menu
 )
