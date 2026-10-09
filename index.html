@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NETRA Traffic Command • Realistic 3D Digital Twin & Dijkstra Optimizer</title>
+<title>NETRA Traffic Command • 7-Signal City Twin & Dijkstra Route Optimizer</title>
 <!-- Three.js & OrbitControls for Native High-Fidelity 3D Simulation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -32,7 +32,7 @@ button:active{transform:translateY(0)}
 .nav div{padding:10px 12px;margin:4px 0;color:var(--muted);border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px}
 .nav div:hover{background:#132034;color:var(--txt)}
 .nav .active{background:#1b2b42;color:white;font-weight:600}
-.main{padding:22px;max-width:1680px;width:100%;margin:auto}
+.main{padding:22px;max-width:1700px;width:100%;margin:auto}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
 .eyebrow{color:var(--green);font-size:11px;letter-spacing:1.5px;font-weight:bold}
 .h1{font-size:24px;font-weight:800;margin:4px 0}
@@ -52,7 +52,7 @@ button:active{transform:translateY(0)}
 .panel{padding:16px;margin-bottom:14px;min-width:0}
 .ph{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px}
 .pt{font-weight:750;font-size:15px;display:flex;align-items:center;gap:8px}
-.signalgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.signalgrid{display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:10px}
 .signal{background:#0d1727;border:1px solid var(--line);border-radius:10px;padding:12px}
 .sighead{display:flex;justify-content:space-between;gap:6px}
 .sigid{font-size:11px;color:var(--muted);margin-top:3px}
@@ -155,10 +155,10 @@ th{color:var(--muted);font-weight:600}
 <div class="app">
 <aside class="side">
   <div class="brand">NETRA<span>●</span> TRAFFIC</div>
-  <div class="sub">3D CITY DIGITAL TWIN COMMAND</div>
+  <div class="sub">7-SIGNAL 3D COMMAND CENTER</div>
   <div class="nav">
     <div class="active">▦ &nbsp; Live Dashboard</div>
-    <div>◉ &nbsp; Signal Control</div>
+    <div>◉ &nbsp; Signal Control (7 Gantries)</div>
     <div>🎮 &nbsp; 3D City Twin</div>
     <div>⚡ &nbsp; Dijkstra Optimizer</div>
     <div>⌁ &nbsp; Emergency Priority</div>
@@ -167,9 +167,9 @@ th{color:var(--muted);font-weight:600}
     <div>◷ &nbsp; Event Log</div>
   </div>
   <div style="margin-top:40px;background:#08121f;border:1px solid var(--line);padding:12px;border-radius:8px">
-    <div style="font-size:11px;font-weight:700;color:var(--green)">🏙️ REALISTIC DIGITAL TWIN</div>
+    <div style="font-size:11px;font-weight:700;color:var(--green)">⚡ ADAPTIVE GREEN WAVE</div>
     <div style="font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4">
-      Physically modeled multi-lane roads, crosswalks, traffic light gantries, vehicle queues, and emergency pathfinding.
+      Traffic density dynamically drives green light seconds. Green duration directly modulates red wait times and residual queues in Dijkstra.
     </div>
   </div>
 </aside>
@@ -178,12 +178,12 @@ th{color:var(--muted);font-weight:600}
   <!-- Top Bar -->
   <div class="top">
     <div>
-      <div class="eyebrow">INTELLIGENT TRANSPORT SYSTEM • 3D DIGITAL TWIN COMMAND</div>
+      <div class="eyebrow">INTELLIGENT TRANSPORT SYSTEM • 7-JUNCTION DIGITAL TWIN</div>
       <div class="h1">Realistic Traffic Operations & Dijkstra Route Optimizer</div>
-      <div class="muted">Real-time signal gantry control, vehicle queuing & stop physics, day/night lighting, and shortest-time emergency dispatch.</div>
+      <div class="muted">7 smart signal gantries, traffic-adaptive green split allocation, and live shortest-travel-time routing.</div>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
-      <span class="tag active-tag">● 3D TWIN ENGINE ACTIVE</span>
+      <span class="tag active-tag">● 7 SIGNALS SYNCHRONIZED</span>
       <span class="tag" id="clock">--:--:--</span>
     </div>
   </div>
@@ -192,13 +192,13 @@ th{color:var(--muted);font-weight:600}
   <div class="stats">
     <div class="stat">
       <div class="statlabel">Intersections</div>
-      <div class="statval">5</div>
-      <div class="statfoot">3D signal gantries</div>
+      <div class="statval">7</div>
+      <div class="statfoot">3D adaptive controllers</div>
     </div>
     <div class="stat">
       <div class="statlabel">Vehicles Monitored</div>
-      <div class="statval" id="total">248</div>
-      <div class="statfoot">Simulated corridor volume</div>
+      <div class="statval" id="total">328</div>
+      <div class="statfoot">7-junction corridor volume</div>
     </div>
     <div class="stat glow-green">
       <div class="statlabel">Best Route Time</div>
@@ -223,7 +223,7 @@ th{color:var(--muted);font-weight:600}
       <!-- Realistic 3D City Digital Twin Panel -->
       <div class="panel">
         <div class="ph">
-          <div class="pt"><span>🏙️</span> City Grid Schematic • 3D Digital Twin</div>
+          <div class="pt"><span>🏙️</span> City Grid Schematic • 7-Junction Digital Twin</div>
           <div style="display:flex;align-items:center;gap:6px">
             <button class="view-switch-btn active" id="btnMode3D" onclick="switchView('3d')">🎮 3D Digital Twin</button>
             <button class="view-switch-btn" id="btnMode2D" onclick="switchView('2d')">📐 2D Schematic</button>
@@ -256,14 +256,14 @@ th{color:var(--muted);font-weight:600}
           <!-- Live 3D HUD Route Banner -->
           <div class="route-hud-pill">
             <span style="color:var(--orange);font-weight:900">⚡ 3D DIJKSTRA ROUTE:</span>
-            <span id="hudRouteSeq" style="font-weight:700">J4 ➔ J5 ➔ J2</span>
-            <span style="color:var(--green);font-weight:800" id="hudRouteTime">(10.7 min)</span>
+            <span id="hudRouteSeq" style="font-weight:700">J4 ➔ J7 ➔ J3</span>
+            <span style="color:var(--green);font-weight:800" id="hudRouteTime">(7.8 min)</span>
           </div>
         </div>
 
         <!-- 2D Schematic Map (Fallback & Toggle View) -->
         <div id="view2dWrap" class="mapwrap" style="display:none">
-          <svg class="map" viewBox="0 0 720 400" aria-label="Schematic 2D map">
+          <svg class="map" viewBox="0 0 720 400" aria-label="Schematic 2D map with 7 junctions">
             <defs>
               <pattern id="blocks" width="42" height="42" patternUnits="userSpaceOnUse">
                 <rect width="32" height="32" x="5" y="5" rx="5" fill="#15253a"/>
@@ -281,9 +281,12 @@ th{color:var(--muted);font-weight:600}
               <text x="215" y="93">MAIN BAZAAR RD (2.2km)</text>
               <text x="435" y="93">HOSPITAL RD (2.2km)</text>
               <text x="215" y="293">SOUTH RING RD (2.2km)</text>
-              <text x="435" y="293">RING RD BYPASS (4.2km)</text>
-              <text x="146" y="200" transform="rotate(90 146,200)">STATION LINK</text>
-              <text x="366" y="200" transform="rotate(90 366,200)">CENTRAL AVE</text>
+              <text x="435" y="293">TECH RING CORRIDOR (2.2km)</text>
+              <text x="215" y="193">WEST MIDTOWN LINK (2.4km)</text>
+              <text x="435" y="193">EAST MIDTOWN LINK (2.4km)</text>
+              <text x="146" y="150" transform="rotate(90 146,150)">STATION LINK</text>
+              <text x="366" y="150" transform="rotate(90 366,150)">CENTRAL AVE N</text>
+              <text x="366" y="250" transform="rotate(90 366,250)">CENTRAL AVE S</text>
               <text x="586" y="200" transform="rotate(90 586,200)">EAST BYPASS</text>
             </g>
             <g id="altRouteLayer"></g>
@@ -294,8 +297,8 @@ th{color:var(--muted);font-weight:600}
               <text x="593" y="82">J3 • HOSPITAL</text>
               <text x="153" y="282">J4 • STATION</text>
               <text x="373" y="282">J5 • RING RD</text>
-              <circle cx="580" cy="300" r="4" fill="#39516f"/>
-              <text x="593" y="305" fill="#758ea8" font-size="10">EAST BYPASS</text>
+              <text x="593" y="282">J6 • IT HUB</text>
+              <text x="373" y="182">J7 • MIDTOWN</text>
             </g>
             <g id="mapSignals"></g>
           </svg>
@@ -308,18 +311,18 @@ th{color:var(--muted);font-weight:600}
         </div>
 
         <div class="notice success" id="routeNotice">
-          Dijkstra algorithm evaluates dynamic edge weights based on real-time traffic volume, density, and signal delays.
+          Dijkstra algorithm evaluates dynamic edge weights based on real-time traffic volume, density, and green light timing.
         </div>
       </div>
 
-      <!-- Intersection Control Panel -->
+      <!-- Intersection Control Panel (7 Signals) -->
       <div class="panel">
         <div class="ph">
-          <div class="pt"><span>◉</span> Adaptive Intersection Controllers</div>
-          <span class="tag">5 Smart Junctions</span>
+          <div class="pt"><span>◉</span> Adaptive Intersection Controllers (7 Smart Junctions)</div>
+          <span class="tag">Adaptive Green Time Enabled</span>
         </div>
         <div id="signals" class="signalgrid"></div>
-        <div class="foot">Change signal lights or traffic density: the 3D traffic lights and vehicles respond immediately with realistic stopping physics.</div>
+        <div class="foot">Traffic count directly adapts green light seconds. Green light seconds directly reduces intersection delay and queue overflow in Dijkstra.</div>
       </div>
 
       <!-- Vehicle Registry & Blacklist -->
@@ -377,14 +380,14 @@ th{color:var(--muted);font-weight:600}
         </div>
 
         <div class="emform">
-          <!-- Quick Route Scenario Presets -->
+          <!-- Quick Route Scenario Presets across 7 Junctions -->
           <div class="field full">
-            <label>⚡ Quick Route Scenarios (Demonstrates Dijkstra Time-Saving)</label>
+            <label>⚡ Quick Route Scenarios (Demonstrates Dijkstra Time-Saving & Green Wave)</label>
             <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <button type="button" class="small" onclick="loadScenario('J4','J3')">⚡ Station ➔ Hospital (Via Midtown)</button>
               <button type="button" class="small" onclick="loadScenario('J4','J2')">⚡ Station ➔ Mall Rd (Saves 4.5m)</button>
-              <button type="button" class="small" onclick="loadScenario('J4','J3')">⚡ Station ➔ Hospital (Saves 6.3m)</button>
-              <button type="button" class="small" onclick="loadScenario('J1','J3')">⚡ Central ➔ Hospital</button>
-              <button type="button" class="small" onclick="loadScenario('J1','J5')">⚡ Central ➔ Ring Rd</button>
+              <button type="button" class="small" onclick="loadScenario('J1','J6')">⚡ Central ➔ IT Hub (Bypass Mall)</button>
+              <button type="button" class="small" onclick="loadScenario('J7','J3')">⚡ Midtown ➔ Hospital</button>
             </div>
           </div>
 
@@ -409,16 +412,20 @@ th{color:var(--muted);font-weight:600}
               <option value="J3">J3 — Hospital</option>
               <option value="J4" selected>J4 — Railway Station</option>
               <option value="J5">J5 — Ring Road</option>
+              <option value="J6">J6 — East Bypass / IT Hub</option>
+              <option value="J7">J7 — Midtown Plaza</option>
             </select>
           </div>
           <div class="field">
             <label>Destination Junction (End)</label>
             <select id="emEnd" onchange="runDijkstra()">
-              <option value="J2" selected>J2 — Mall Road</option>
-              <option value="J3">J3 — Hospital</option>
+              <option value="J3" selected>J3 — Hospital</option>
               <option value="J1">J1 — Central Junction</option>
+              <option value="J2">J2 — Mall Road</option>
               <option value="J4">J4 — Railway Station</option>
               <option value="J5">J5 — Ring Road</option>
+              <option value="J6">J6 — East Bypass / IT Hub</option>
+              <option value="J7">J7 — Midtown Plaza</option>
             </select>
           </div>
           <div class="field">
@@ -450,7 +457,7 @@ th{color:var(--muted);font-weight:600}
           </div>
 
           <div class="route-sequence" id="routeSequenceBox">
-            <span>J4</span><span class="arrow">➔</span><span>J5</span><span class="arrow">➔</span><span>J2</span>
+            <span>J4</span><span class="arrow">➔</span><span>J7</span><span class="arrow">➔</span><span>J3</span>
           </div>
 
           <!-- Metrics Row -->
@@ -497,7 +504,7 @@ th{color:var(--muted);font-weight:600}
             <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">Turn-By-Turn Corridor Breakdown:</div>
             <table class="paths-table">
               <thead>
-                <tr><th>Leg</th><th>Road Corridor</th><th>Distance</th><th>Density & Phase</th><th>Leg Time</th></tr>
+                <tr><th>Leg</th><th>Road Corridor</th><th>Distance</th><th>Density & Phase</th><th>Green Split</th><th>Leg Time</th></tr>
               </thead>
               <tbody id="segmentsBody"></tbody>
             </table>
@@ -505,8 +512,10 @@ th{color:var(--muted);font-weight:600}
 
           <!-- Algorithm Formula Pill -->
           <div class="formula-pill">
-            <b>Dijkstra Cost Function:</b><br>
-            <code>Weight = (Base Distance / Speed) × [1 + 2.2 × (Density / 100)²] + Signal Delay</code>
+            <b>Adaptive Green & Dijkstra Cost Formula:</b><br>
+            <code>Adaptive Green = 15s + (Density × 0.55) + (Count × 0.25) [Max 90s]</code><br>
+            <code>Red Wait Delay = ((100s - GreenSec) / 60) × [1 + Density/100 × 0.4]</code><br>
+            <code>Travel Time = BaseTime × CongestionMultiplier + SignalWaitDelay</code>
           </div>
         </div>
 
@@ -535,15 +544,15 @@ th{color:var(--muted);font-weight:600}
 
       <!-- 3D Architecture & Academic Notes -->
       <div class="panel">
-        <div class="pt">3D Digital Twin & ITS Architecture</div>
+        <div class="pt">7-Signal ITS Architecture & Adaptive Green Waves</div>
         <p class="muted" style="font-size:12px;line-height:1.5;margin-top:8px">
-          <b>Realistic Physics & Rendering:</b> Three.js WebGL engine with procedural building textures, PBR asphalt shaders, zebra crossings, hooded signal visors, working vehicle headlights/taillights, and distance-based vehicle queue stopping logic.
+          <b>Adaptive Traffic Engineering:</b> Incorporates Webster's delay model and Green Split allocation across 7 intelligent controllers. Traffic queuing volume dynamically extends green durations, directly shortening red light cycle delays and minimizing Dijkstra path costs.
         </p>
       </div>
     </section>
   </div>
 
-  <div class="foot">NETRA Traffic Command • 3D Intelligent Transportation Systems • Realistic Digital Twin</div>
+  <div class="foot">NETRA Traffic Command • 7-Signal Intelligent Transportation Systems • Adaptive Green Waves</div>
 </main>
 </div>
 
@@ -551,14 +560,16 @@ th{color:var(--muted);font-weight:600}
 
 <script>
 // ==========================================
-// 1. DATA MODEL & GRAPH DEFINITION
+// 1. DATA MODEL & GRAPH DEFINITION (7 SIGNALS)
 // ==========================================
 const js = [
   { id: 'J1', name: 'Central Junction', road: 'Main Bazaar Rd', count: 62, density: 78, phase: 'RED', green: 35 },
-  { id: 'J2', name: 'Mall Road Crossing', road: 'Mall Road', count: 48, density: 61, phase: 'GREEN', green: 40 },
+  { id: 'J2', name: 'Mall Road Crossing', road: 'Mall Road', count: 48, density: 61, phase: 'GREEN', green: 45 },
   { id: 'J3', name: 'Hospital Junction', road: 'Civil Hospital Rd', count: 31, density: 42, phase: 'RED', green: 30 },
   { id: 'J4', name: 'Railway Station', road: 'Station Road', count: 57, density: 72, phase: 'YELLOW', green: 35 },
-  { id: 'J5', name: 'Ring Road Crossing', road: 'Ring Road', count: 50, density: 55, phase: 'GREEN', green: 45 }
+  { id: 'J5', name: 'Ring Road Crossing', road: 'Ring Road', count: 50, density: 55, phase: 'GREEN', green: 45 },
+  { id: 'J6', name: 'IT Hub / East Bypass', road: 'Tech Expressway', count: 38, density: 45, phase: 'GREEN', green: 50 },
+  { id: 'J7', name: 'Midtown Plaza Hub', road: 'Central Ave Mid', count: 42, density: 52, phase: 'GREEN', green: 40 }
 ];
 
 let vehicles = [
@@ -573,21 +584,35 @@ let alerts = [];
 let logs = [];
 let currentViewMode = '3d';
 
+// Coordinates for 2D map (7 Junctions)
 const pos2D = {
   J1: [140, 100],
   J2: [360, 100],
   J3: [580, 100],
   J4: [140, 300],
-  J5: [360, 300]
+  J5: [360, 300],
+  J6: [580, 300],
+  J7: [360, 200]
 };
 
+// 12 Connected Road Corridors for 7 Junctions
 const roadEdges = [
+  // North Corridor
   { u: 'J1', v: 'J2', road: 'Main Bazaar - Mall Rd', distKm: 2.2, speedKmh: 45 },
   { u: 'J2', v: 'J3', road: 'Civil Hospital Road', distKm: 2.2, speedKmh: 40 },
-  { u: 'J1', v: 'J4', road: 'Station Link Road', distKm: 2.0, speedKmh: 40 },
+  // South Ring Corridor
   { u: 'J4', v: 'J5', road: 'South Ring Road', distKm: 2.2, speedKmh: 50 },
-  { u: 'J2', v: 'J5', road: 'Central Avenue Cross Link', distKm: 2.0, speedKmh: 40 },
-  { u: 'J5', v: 'J3', road: 'East Ring Road Bypass', distKm: 4.2, speedKmh: 65, waypoints2D: [[580, 300]] }
+  { u: 'J5', v: 'J6', road: 'Tech Ring Corridor', distKm: 2.2, speedKmh: 55 },
+  // Vertical Links
+  { u: 'J1', v: 'J4', road: 'Station Link Road', distKm: 2.0, speedKmh: 40 },
+  { u: 'J2', v: 'J7', road: 'Central Avenue North', distKm: 1.0, speedKmh: 40 },
+  { u: 'J7', v: 'J5', road: 'Central Avenue South', distKm: 1.0, speedKmh: 40 },
+  { u: 'J3', v: 'J6', road: 'East Bypass Expressway', distKm: 2.0, speedKmh: 60 },
+  // Midtown Links passing through J7
+  { u: 'J1', v: 'J7', road: 'West Midtown Link', distKm: 2.4, speedKmh: 45, waypoints2D: [[140, 200]] },
+  { u: 'J7', v: 'J3', road: 'East Midtown Link', distKm: 2.4, speedKmh: 45, waypoints2D: [[580, 200]] },
+  { u: 'J4', v: 'J7', road: 'Station Midtown Arterial', distKm: 2.4, speedKmh: 45, waypoints2D: [[140, 200]] },
+  { u: 'J7', v: 'J6', road: 'IT Hub Midtown Arterial', distKm: 2.4, speedKmh: 50, waypoints2D: [[580, 200]] }
 ];
 
 function getEdgesFrom(u) {
@@ -608,10 +633,11 @@ function getEdgesFrom(u) {
   return res;
 }
 
-// ==========================================
-// 2. DIJKSTRA ALGORITHM & COST FUNCTIONS
-// ==========================================
+// =======================================================
+// 2. ADAPTIVE GREEN WAVE & DIJKSTRA ALGORITHM
+// =======================================================
 
+// Calculate dynamic metrics: Traffic volume scales green time, green time directly affects delay
 function calculateSegmentMetrics(fromId, toId, distKm, speedKmh, criterion = 'time', isPriority = false) {
   const targetJunction = js.find(j => j.id === toId);
   const density = targetJunction ? targetJunction.density : 50;
@@ -619,22 +645,35 @@ function calculateSegmentMetrics(fromId, toId, distKm, speedKmh, criterion = 'ti
   const phase = targetJunction ? targetJunction.phase : 'GREEN';
   const greenSec = targetJunction ? targetJunction.green : 35;
 
+  // 1. Free-flow travel time (minutes)
   const baseTimeMin = (distKm / Math.max(15, speedKmh)) * 60;
+
+  // 2. Congestion multiplier based on volume density
   const dRatio = density / 100;
   const congestionFactor = 1.0 + (Math.pow(dRatio, 1.8) * 2.2) + (count > 60 ? 0.35 : 0);
   const roadTravelTimeMin = baseTimeMin * congestionFactor;
 
+  // 3. Signal Delay influenced directly by Green Light Seconds (Webster delay model)
   let signalDelayMin = 0;
   if (isPriority) {
-    signalDelayMin = 0.1;
+    signalDelayMin = 0.08; // Green-wave preemption eliminates signal wait
   } else {
+    const cycleSec = 100; // Standard municipal signal cycle
+    const redCycleSec = Math.max(10, cycleSec - greenSec);
+
     if (phase === 'GREEN') {
-      signalDelayMin = 0.15;
+      // Green light is active: Delay is low, but if green duration is too short to clear vehicle volume, queue overflow occurs!
+      const capacityRatio = count / Math.max(10, greenSec * 0.95);
+      const queueOverflowDelay = Math.max(0, (capacityRatio - 0.75) * 0.55);
+      signalDelayMin = 0.12 + queueOverflowDelay;
     } else if (phase === 'YELLOW') {
       signalDelayMin = 0.45;
     } else {
-      const redCycleSec = Math.max(25, 100 - greenSec);
-      signalDelayMin = (redCycleSec / 60) * 1.15;
+      // RED light wait time is directly proportional to red phase length (100s - greenSec)
+      // Increasing green duration from 20s to 70s drops red wait time from 1.5m to 0.5m!
+      const baseRedWaitMin = (redCycleSec / 60) * 1.1;
+      const congestionWait = (density / 100) * 0.4;
+      signalDelayMin = baseRedWaitMin + congestionWait;
     }
   }
 
@@ -650,7 +689,7 @@ function calculateSegmentMetrics(fromId, toId, distKm, speedKmh, criterion = 'ti
     roadTravelTimeMin: Math.round(roadTravelTimeMin * 10) / 10,
     signalDelayMin: Math.round(signalDelayMin * 10) / 10,
     totalSegmentTimeMin: Math.round(totalSegmentTimeMin * 10) / 10,
-    density, count, phase
+    density, count, phase, greenSec
   };
 }
 
@@ -782,7 +821,7 @@ function evaluateAllCandidatePaths(startId, endId, criterion = 'time', isPriorit
 }
 
 // ==========================================
-// 3. HIGH-REALISM THREE.JS 3D CITY ENGINE
+// 3. THREE.JS 3D CITY ENGINE (7 GANTRIES)
 // ==========================================
 
 let scene3D, camera3D, renderer3D, controls3D;
@@ -799,16 +838,18 @@ let sunLight, ambientLight, hemiLight;
 let chevronTexture = null;
 let destPin3D = null;
 
-const pos3D = {
-  J1: new THREE.Vector3(-55, 0.25, -25),
-  J2: new THREE.Vector3(0, 0.25, -25),
-  J3: new THREE.Vector3(55, 0.25, -25),
-  J4: new THREE.Vector3(-55, 0.25, 25),
-  J5: new THREE.Vector3(0, 0.25, 25),
-  EAST_BYPASS: new THREE.Vector3(55, 0.25, 25)
+// 3D coordinates for all 7 Junctions (Plain coordinates for offline/delayed CDN safety)
+const pos3DCoords = {
+  J1: [-55, 0.25, -25],
+  J2: [0, 0.25, -25],
+  J3: [55, 0.25, -25],
+  J4: [-55, 0.25, 25],
+  J5: [0, 0.25, 25],
+  J6: [55, 0.25, 25],
+  J7: [0, 0.25, 0]
 };
+let pos3D = {};
 
-// Procedural Illuminated Building Facade Texture
 function createBuildingTexture() {
   const canvas = document.createElement('canvas');
   canvas.width = 128;
@@ -817,22 +858,18 @@ function createBuildingTexture() {
   ctx.fillStyle = '#0a121c';
   ctx.fillRect(0, 0, 128, 256);
 
-  // Horizontal floor dividers
   ctx.fillStyle = '#14202e';
-  for (let y = 0; y < 256; y += 14) {
-    ctx.fillRect(0, y, 128, 2);
-  }
+  for (let y = 0; y < 256; y += 14) ctx.fillRect(0, y, 128, 2);
 
-  // Office windows
   for (let y = 3; y < 256; y += 14) {
     for (let x = 4; x < 128; x += 11) {
       const r = Math.random();
       if (r > 0.52) {
-        if (r > 0.88) ctx.fillStyle = '#fef08a'; // Warm Gold
-        else if (r > 0.68) ctx.fillStyle = '#7dd3fc'; // Cyan Glass
-        else ctx.fillStyle = '#e2e8f0'; // Warm White
+        if (r > 0.88) ctx.fillStyle = '#fef08a';
+        else if (r > 0.68) ctx.fillStyle = '#7dd3fc';
+        else ctx.fillStyle = '#e2e8f0';
       } else {
-        ctx.fillStyle = '#060a10'; // Dark Unlit Window
+        ctx.fillStyle = '#060a10';
       }
       ctx.fillRect(x, y, 7, 9);
     }
@@ -844,7 +881,6 @@ function createBuildingTexture() {
   return tex;
 }
 
-// Procedural Animated Chevron Navigation Texture
 function createChevronTexture() {
   const canvas = document.createElement('canvas');
   canvas.width = 256;
@@ -882,6 +918,11 @@ function init3D() {
   const width = container.clientWidth || 800;
   const height = container.clientHeight || 490;
 
+  // Initialize 3D Vectors safely once THREE is confirmed loaded
+  for (const k in pos3DCoords) {
+    pos3D[k] = new THREE.Vector3(...pos3DCoords[k]);
+  }
+
   scene3D = new THREE.Scene();
   scene3D.background = new THREE.Color(0x050b14);
   scene3D.fog = new THREE.FogExp2(0x050b14, 0.0065);
@@ -908,8 +949,7 @@ function init3D() {
     controls3D.target.set(0, 0, 0);
   }
 
-  // Lights Setup
-  ambientLight = new THREE.AmbientLight(0x28405e, 0.9);
+  ambientLight = new THREE.AmbientLight(0x28405e, 0.85);
   scene3D.add(ambientLight);
 
   hemiLight = new THREE.HemisphereLight(0x386088, 0x07111c, 0.7);
@@ -932,7 +972,6 @@ function init3D() {
 
   chevronTexture = createChevronTexture();
 
-  // Environment Construction
   buildRealisticGroundAndRoads();
   buildRealisticBuildings();
   buildRealisticTrafficLights();
@@ -944,7 +983,6 @@ function init3D() {
   animate3D();
 }
 
-// Build Road Network with Curbs, Sidewalks, Zebra Crossings & Stop Bars
 function buildRealisticGroundAndRoads() {
   const groundGeo = new THREE.PlaneGeometry(300, 240);
   const groundMat = new THREE.MeshStandardMaterial({ color: 0x060c15, roughness: 0.95 });
@@ -962,7 +1000,6 @@ function buildRealisticGroundAndRoads() {
 
   function createRoadCorridor(x, z, length, isHorizontal = true) {
     const rw = 10.0;
-    // 1. Asphalt Bed
     const rGeo = new THREE.PlaneGeometry(rw, length);
     const road = new THREE.Mesh(rGeo, asphaltMat);
     road.rotation.x = -Math.PI / 2;
@@ -971,12 +1008,9 @@ function buildRealisticGroundAndRoads() {
     road.receiveShadow = true;
     scene3D.add(road);
 
-    // 2. Concrete Curbs & Sidewalks on Both Sides
     [-1, 1].forEach(side => {
-      // Raised Sidewalk
       const swGeo = new THREE.BoxGeometry(2.4, 0.22, length);
       const sw = new THREE.Mesh(swGeo, sidewalkMat);
-      // Curb Strip
       const curbGeo = new THREE.BoxGeometry(0.3, 0.26, length);
       const curb = new THREE.Mesh(curbGeo, curbMat);
 
@@ -995,7 +1029,6 @@ function buildRealisticGroundAndRoads() {
       scene3D.add(curb);
     });
 
-    // 3. Double Solid Yellow Centerlines
     [-0.2, 0.2].forEach(off => {
       const yLineGeo = new THREE.PlaneGeometry(0.16, length);
       const yLine = new THREE.Mesh(yLineGeo, yellowLineMat);
@@ -1009,7 +1042,6 @@ function buildRealisticGroundAndRoads() {
       scene3D.add(yLine);
     });
 
-    // 4. White Dashed Lane Dividers (Outer travel lanes)
     [-2.6, 2.6].forEach(laneOff => {
       const numDashes = Math.floor(length / 5.5);
       for (let i = 0; i < numDashes; i++) {
@@ -1027,7 +1059,6 @@ function buildRealisticGroundAndRoads() {
       }
     });
 
-    // 5. Street Light Poles along the Sidewalk
     const numLights = Math.floor(length / 28);
     for (let i = 0; i < numLights; i++) {
       const lPos = -length / 2 + 14 + i * 28;
@@ -1038,17 +1069,15 @@ function buildRealisticGroundAndRoads() {
     }
   }
 
-  // Intersections: Create Zebra Crossings & White Stop Bars
   function createJunctionMarkings(cx, cz) {
     const approaches = [
-      { x: cx, z: cz - 7.2, rot: 0 },       // North
-      { x: cx, z: cz + 7.2, rot: 0 },       // South
-      { x: cx - 7.2, z: cz, rot: Math.PI / 2 }, // West
-      { x: cx + 7.2, z: cz, rot: Math.PI / 2 }  // East
+      { x: cx, z: cz - 7.2, rot: 0 },
+      { x: cx, z: cz + 7.2, rot: 0 },
+      { x: cx - 7.2, z: cz, rot: Math.PI / 2 },
+      { x: cx + 7.2, z: cz, rot: Math.PI / 2 }
     ];
 
     approaches.forEach(app => {
-      // White Stop Bar
       const stopGeo = new THREE.PlaneGeometry(4.4, 0.65);
       const stopBar = new THREE.Mesh(stopGeo, whiteLineMat);
       stopBar.rotation.x = -Math.PI / 2;
@@ -1056,14 +1085,12 @@ function buildRealisticGroundAndRoads() {
       stopBar.position.set(app.x, 0.11, app.z);
       scene3D.add(stopBar);
 
-      // Zebra Pedestrian Stripes
       const numStripes = 6;
       for (let s = -numStripes / 2; s < numStripes / 2; s++) {
         const zGeo = new THREE.PlaneGeometry(0.5, 3.2);
         const stripe = new THREE.Mesh(zGeo, zebraMat);
         stripe.rotation.x = -Math.PI / 2;
         stripe.rotation.z = app.rot;
-
         if (app.rot === 0) {
           stripe.position.set(app.x + s * 0.8 + 0.4, 0.11, app.z > cz ? app.z - 2.2 : app.z + 2.2);
         } else {
@@ -1075,48 +1102,45 @@ function buildRealisticGroundAndRoads() {
   }
 
   // Horizontal Roads:
-  createRoadCorridor(0, -25, 170, true);
-  createRoadCorridor(0, 25, 170, true);
+  createRoadCorridor(0, -25, 170, true); // North (J1-J2-J3)
+  createRoadCorridor(0, 25, 170, true);  // South (J4-J5-J6)
+  createRoadCorridor(0, 0, 170, true);   // Midtown Arterial through J7!
 
   // Vertical Roads:
-  createRoadCorridor(-55, 0, 85, false);
-  createRoadCorridor(0, 0, 85, false);
-  createRoadCorridor(55, 0, 85, false);
+  createRoadCorridor(-55, 0, 85, false); // West Link
+  createRoadCorridor(0, 0, 85, false);   // Central Ave through J2-J7-J5!
+  createRoadCorridor(55, 0, 85, false);  // East Link
 
-  // Crosswalks & Stop Bars for all junctions
-  createJunctionMarkings(-55, -25);
-  createJunctionMarkings(0, -25);
-  createJunctionMarkings(55, -25);
-  createJunctionMarkings(-55, 25);
-  createJunctionMarkings(0, 25);
-  createJunctionMarkings(55, 25);
+  // 7 Intersection Markings
+  createJunctionMarkings(-55, -25); // J1
+  createJunctionMarkings(0, -25);   // J2
+  createJunctionMarkings(55, -25);  // J3
+  createJunctionMarkings(-55, 25);  // J4
+  createJunctionMarkings(0, 25);    // J5
+  createJunctionMarkings(55, 25);   // J6
+  createJunctionMarkings(0, 0);     // J7 Midtown Plaza!
 }
 
-// Streetlight Post with Downward Illumination
 function createStreetLight(x, z) {
   const poleMat = new THREE.MeshStandardMaterial({ color: 0x334455, roughness: 0.5 });
   const post = new THREE.Group();
   post.position.set(x, 0, z);
 
-  // Vertical Pole
   const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 7.5, 12), poleMat);
   pole.position.y = 3.75;
   pole.castShadow = true;
   post.add(pole);
 
-  // Curved LED Luminaire Arm
   const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 2.4, 12), poleMat);
   arm.rotation.z = Math.PI / 2;
   arm.position.set(-1.2, 7.3, 0);
   post.add(arm);
 
-  // Emissive Light Head
   const headMat = new THREE.MeshStandardMaterial({ color: 0xfff3d6, emissive: 0xfff3d6, emissiveIntensity: 1.2 });
   const head = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.2, 0.4), headMat);
   head.position.set(-2.2, 7.1, 0);
   post.add(head);
 
-  // Downward Cone Spotlight
   const light = new THREE.PointLight(0xffecd1, 0.85, 22, 1.8);
   light.position.set(-2.2, 6.8, 0);
   post.add(light);
@@ -1125,7 +1149,6 @@ function createStreetLight(x, z) {
   scene3D.add(post);
 }
 
-// Realistic City Buildings with Illuminated Office Windows
 function buildRealisticBuildings() {
   const windowTex = createBuildingTexture();
   const facadeMats = [
@@ -1140,7 +1163,6 @@ function buildRealisticBuildings() {
     const group = new THREE.Group();
     group.position.set(bx, 0, bz);
 
-    // Tower Main Volume
     const bMat = facadeMats[Math.floor(Math.random() * facadeMats.length)];
     const bGeo = new THREE.BoxGeometry(bw, bh, bd);
     const bMesh = new THREE.Mesh(bGeo, bMat);
@@ -1149,13 +1171,11 @@ function buildRealisticBuildings() {
     bMesh.receiveShadow = true;
     group.add(bMesh);
 
-    // Rooftop Mechanical Penthouse / HVAC Units
     const phGeo = new THREE.BoxGeometry(bw * 0.55, 2.5, bd * 0.55);
     const ph = new THREE.Mesh(phGeo, roofMat);
     ph.position.y = bh + 1.25;
     group.add(ph);
 
-    // Rooftop Antenna / Water Tanks
     if (Math.random() > 0.4) {
       const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.15, 6, 8), metalPropsMat);
       ant.position.set(bw * 0.2, bh + 5.5, bd * 0.2);
@@ -1180,13 +1200,10 @@ function buildRealisticBuildings() {
     }
   }
 
-  // 4 Core City Quadrants
   spawnQuadrant(-27, -12, 38, 14);
   spawnQuadrant(27, -12, 38, 14);
   spawnQuadrant(-27, 12, 38, 14);
   spawnQuadrant(27, 12, 38, 14);
-
-  // Outer Perimeter City Blocks
   spawnQuadrant(-27, -42, 38, 14);
   spawnQuadrant(27, -42, 38, 14);
   spawnQuadrant(-27, 42, 38, 14);
@@ -1195,7 +1212,7 @@ function buildRealisticBuildings() {
   spawnQuadrant(78, 0, 18, 65);
 }
 
-// Realistic 3-Aspect Traffic Signal Gantries with Hooded Visors
+// Build 7 Cantilever Traffic Light Gantries
 function buildRealisticTrafficLights() {
   const gantryMat = new THREE.MeshStandardMaterial({ color: 0x1f2937, roughness: 0.4, metalness: 0.6 });
   const housingMat = new THREE.MeshStandardMaterial({ color: 0x090d14, roughness: 0.5 });
@@ -1206,24 +1223,20 @@ function buildRealisticTrafficLights() {
     const group = new THREE.Group();
     group.position.set(p.x + 5.5, 0, p.z - 5.5);
 
-    // Tubular Steel Mast Pole
     const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.35, 8.5, 16), gantryMat);
     pole.position.y = 4.25;
     pole.castShadow = true;
     group.add(pole);
 
-    // Cantilever Overhead Arm stretching over intersection
     const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 5.8, 16), gantryMat);
     arm.rotation.z = Math.PI / 2;
     arm.position.set(-2.9, 8.1, 0);
     group.add(arm);
 
-    // Signal Housing Box
     const box = new THREE.Mesh(new THREE.BoxGeometry(1.0, 2.8, 0.9), housingMat);
     box.position.set(-4.6, 7.0, 0);
     group.add(box);
 
-    // Hooded Visors & Bulbs for Red, Yellow, Green
     const bulbGeo = new THREE.SphereGeometry(0.32, 20, 20);
     const visorGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.45, 16, 1, true, 0, Math.PI);
     visorGeo.rotateX(Math.PI / 2);
@@ -1255,12 +1268,10 @@ function buildRealisticTrafficLights() {
     gVisor.position.set(-4.6, 6.45, 0.65);
     group.add(gVisor);
 
-    // Active Signal Projection Light
     const signalLight = new THREE.PointLight(0x00ffaa, 1.8, 22, 1.6);
     signalLight.position.set(-4.6, 7.0, 2.2);
     group.add(signalLight);
 
-    // Overhead Junction ID Badge Disc
     const badgeGeo = new THREE.CylinderGeometry(2.4, 2.4, 0.25, 24);
     const badgeMat = new THREE.MeshBasicMaterial({ color: 0x0e1c2e });
     const badge = new THREE.Mesh(badgeGeo, badgeMat);
@@ -1310,11 +1321,9 @@ function update3DSignals() {
   });
 }
 
-// Realistic Emergency Ambulance with Working Headlights & Strobing Siren
 function buildRealisticAmbulance() {
   const ambGroup = new THREE.Group();
 
-  // White Aerodynamic Van Chassis
   const whiteMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.25, metalness: 0.1 });
   const cab = new THREE.Mesh(new THREE.BoxGeometry(2.3, 1.4, 2.2), whiteMat);
   cab.position.set(0, 1.05, 1.3);
@@ -1326,7 +1335,6 @@ function buildRealisticAmbulance() {
   rearBox.castShadow = true;
   ambGroup.add(rearBox);
 
-  // Red Emergency Stripes & Livery
   const redDecalMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, roughness: 0.3 });
   const stripeL = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.45, 4.4), redDecalMat);
   stripeL.position.set(1.22, 1.2, -0.2);
@@ -1336,14 +1344,12 @@ function buildRealisticAmbulance() {
   stripeR.position.set(-1.22, 1.2, -0.2);
   ambGroup.add(stripeR);
 
-  // Windshield & Windows
   const glassMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.1, metalness: 0.9 });
   const windshield = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.75, 0.1), glassMat);
   windshield.position.set(0, 1.35, 2.42);
   windshield.rotation.x = -0.25;
   ambGroup.add(windshield);
 
-  // Wheels with Alloy Rims
   const tireMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.9 });
   const rimMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.8, roughness: 0.3 });
   const wheelGeo = new THREE.CylinderGeometry(0.44, 0.44, 0.38, 16);
@@ -1361,7 +1367,6 @@ function buildRealisticAmbulance() {
     ambGroup.add(rim);
   });
 
-  // Working Forward Headlights (White Spotlights)
   const headMat = new THREE.MeshBasicMaterial({ color: 0xfffaed });
   [-0.8, 0.8].forEach(hx => {
     const hl = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.2, 0.1), headMat);
@@ -1375,7 +1380,6 @@ function buildRealisticAmbulance() {
     ambGroup.add(spot.target);
   });
 
-  // Rear Taillights
   const tailMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
   [-0.9, 0.9].forEach(tx => {
     const tl = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.25, 0.08), tailMat);
@@ -1383,7 +1387,6 @@ function buildRealisticAmbulance() {
     ambGroup.add(tl);
   });
 
-  // Dual Strobing Roof Lightbars (Red & Blue)
   const beaconGeo = new THREE.BoxGeometry(0.4, 0.22, 0.9);
   const beaconRedMat = new THREE.MeshStandardMaterial({ color: 0xff0033, emissive: 0xff0033, emissiveIntensity: 2.0 });
   const beaconBlueMat = new THREE.MeshStandardMaterial({ color: 0x0088ff, emissive: 0x0088ff, emissiveIntensity: 2.0 });
@@ -1410,7 +1413,6 @@ function buildRealisticAmbulance() {
   };
 }
 
-// Realistic Civilian Traffic with Stopping Physics & Brake Lights
 function buildRealisticCivilianTraffic() {
   const carColors = [0x1e3a8a, 0xb45309, 0x047857, 0x334155, 0x991b1b, 0x475569];
   const glassMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.1, metalness: 0.9 });
@@ -1420,8 +1422,8 @@ function buildRealisticCivilianTraffic() {
     { start: new THREE.Vector3(-55, 0, -25), end: new THREE.Vector3(55, 0, -25), targetJ: 'J2' },
     { start: new THREE.Vector3(55, 0, 25), end: new THREE.Vector3(-55, 0, 25), targetJ: 'J5' },
     { start: new THREE.Vector3(-55, 0, -25), end: new THREE.Vector3(-55, 0, 25), targetJ: 'J4' },
-    { start: new THREE.Vector3(0, 0, 25), end: new THREE.Vector3(0, 0, -25), targetJ: 'J2' },
-    { start: new THREE.Vector3(55, 0, 25), end: new THREE.Vector3(55, 0, -25), targetJ: 'J3' }
+    { start: new THREE.Vector3(0, 25, 0, -25), end: new THREE.Vector3(0, -25, 0), targetJ: 'J7' },
+    { start: new THREE.Vector3(55, 0, 25), end: new THREE.Vector3(55, 0, -25), targetJ: 'J6' }
   ];
 
   for (let i = 0; i < 9; i++) {
@@ -1429,7 +1431,6 @@ function buildRealisticCivilianTraffic() {
     const cMat = new THREE.MeshStandardMaterial({ color: col, roughness: 0.35, metalness: 0.4 });
     const cGroup = new THREE.Group();
 
-    // Car Body Aerodynamic Profile
     const body = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.85, 4.2), cMat);
     body.position.y = 0.72;
     body.castShadow = true;
@@ -1440,14 +1441,12 @@ function buildRealisticCivilianTraffic() {
     cabin.castShadow = true;
     cGroup.add(cabin);
 
-    // Headlights
     [-0.7, 0.7].forEach(hx => {
       const hl = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.18, 0.1), headMat);
       hl.position.set(hx, 0.65, 2.12);
       cGroup.add(hl);
     });
 
-    // Reactive Brake Lights
     const brakeMat = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0xef4444, emissiveIntensity: 0.6 });
     [-0.7, 0.7].forEach(tx => {
       const tl = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.2, 0.1), brakeMat);
@@ -1472,7 +1471,6 @@ function buildRealisticCivilianTraffic() {
   }
 }
 
-// 3D Holographic Destination Map Pin
 function buildDestinationPin() {
   const pinGroup = new THREE.Group();
 
@@ -1486,7 +1484,6 @@ function buildDestinationPin() {
   cone.position.y = 9.8;
   pinGroup.add(cone);
 
-  // Ground Radar Pulse Ring
   const ringGeo = new THREE.RingGeometry(1.5, 2.2, 24);
   const ringMat = new THREE.MeshBasicMaterial({ color: 0x31d0a0, side: THREE.DoubleSide, transparent: true, opacity: 0.7 });
   const ring = new THREE.Mesh(ringGeo, ringMat);
@@ -1499,7 +1496,6 @@ function buildDestinationPin() {
   destPin3D = { group: pinGroup, ringMat };
 }
 
-// High-Realism Dijkstra Navigation AR Ribbon on Road Surface
 function update3DRouteRibbon(dijkstraPath, altPath = null) {
   if (!scene3D) return;
 
@@ -1526,16 +1522,17 @@ function update3DRouteRibbon(dijkstraPath, altPath = null) {
       pts.push(pos3D[u].clone());
       if (i < pList.length - 1) {
         const v = pList[i + 1];
-        if ((u === 'J5' && v === 'J3') || (u === 'J3' && v === 'J5')) {
-          pts.push(pos3D.EAST_BYPASS.clone());
-        }
+        // Insert corner waypoints if going through midtown corners
+        if ((u === 'J1' && v === 'J7') || (u === 'J7' && v === 'J1')) pts.push(new THREE.Vector3(-55, 0.25, 0));
+        if ((u === 'J7' && v === 'J3') || (u === 'J3' && v === 'J7')) pts.push(new THREE.Vector3(55, 0.25, 0));
+        if ((u === 'J4' && v === 'J7') || (u === 'J7' && v === 'J4')) pts.push(new THREE.Vector3(-55, 0.25, 0));
+        if ((u === 'J7' && v === 'J6') || (u === 'J6' && v === 'J7')) pts.push(new THREE.Vector3(55, 0.25, 0));
       }
     }
-    pts.forEach(p => p.y = 0.32); // Flat just above road surface
+    pts.forEach(p => p.y = 0.32);
     return pts;
   }
 
-  // Draw Primary Dijkstra Optimal AR Chevron Path
   const mainPts = getPathVectors(dijkstraPath);
   routeSpline3D = new THREE.CatmullRomCurve3(mainPts, false, 'catmullrom', 0.12);
 
@@ -1552,7 +1549,6 @@ function update3DRouteRibbon(dijkstraPath, altPath = null) {
   route3DMesh = new THREE.Mesh(tubeGeo, arMat);
   scene3D.add(route3DMesh);
 
-  // Draw Congested Alternative Route in Dashed Crimson
   if (altPath && altPath.length > 1 && altPath.join('-') !== dijkstraPath.join('-')) {
     const altPts = getPathVectors(altPath);
     altPts.forEach(p => p.y = 0.24);
@@ -1569,7 +1565,6 @@ function update3DRouteRibbon(dijkstraPath, altPath = null) {
     scene3D.add(altRoute3DMesh);
   }
 
-  // Position 3D Destination Beacon Pin
   if (destPin3D) {
     const destId = dijkstraPath[dijkstraPath.length - 1];
     const dPos = pos3D[destId];
@@ -1580,24 +1575,18 @@ function update3DRouteRibbon(dijkstraPath, altPath = null) {
   ambulanceProgress = 0;
 }
 
-// 60 FPS Simulation Loop with Realistic Vehicle Stopping Physics
 function animate3D() {
   requestAnimationFrame(animate3D);
 
   const time = Date.now() * 0.001;
 
-  // 1. Animate Flowing Navigation Chevrons on Road
-  if (chevronTexture) {
-    chevronTexture.offset.x -= 0.016;
-  }
+  if (chevronTexture) chevronTexture.offset.x -= 0.016;
 
-  // 2. Animate 3D Destination Pin Bobbing & Radar Pulse
   if (destPin3D && destPin3D.group.visible) {
     destPin3D.group.position.y = Math.sin(time * 3.5) * 0.65;
     destPin3D.ringMat.opacity = (Math.sin(time * 4) + 1) * 0.45;
   }
 
-  // 3. Animate Emergency Ambulance along Dijkstra Path
   if (ambulanceVehicle3D && routeSpline3D) {
     ambulanceProgress += 0.0036;
     if (ambulanceProgress > 1.0) ambulanceProgress = 0;
@@ -1609,13 +1598,11 @@ function animate3D() {
     const lookTarget = pos.clone().add(tangent);
     ambulanceVehicle3D.group.lookAt(lookTarget);
 
-    // Alternating 4 Hz Strobing Roof Beacons
     const isRedFlash = Math.sin(time * 16) > 0;
     ambulanceVehicle3D.beaconRedMat.emissiveIntensity = isRedFlash ? 3.0 : 0.15;
     ambulanceVehicle3D.beaconBlueMat.emissiveIntensity = !isRedFlash ? 3.0 : 0.15;
     ambulanceVehicle3D.sirenLight.color.setHex(isRedFlash ? 0xff0033 : 0x0088ff);
 
-    // Chase Camera Mode
     if (isFollowAmbulance && controls3D) {
       const camOffset = tangent.clone().multiplyScalar(-19).add(new THREE.Vector3(0, 11, 0));
       camera3D.position.lerp(pos.clone().add(camOffset), 0.09);
@@ -1623,23 +1610,19 @@ function animate3D() {
     }
   }
 
-  // 4. Realistic Civilian Vehicles with Signal Detection & Stopping Physics
   civilianCars3D.forEach(car => {
     const targetJunction = js.find(j => j.id === car.targetJ);
     const isRedOrYellow = targetJunction && (targetJunction.phase === 'RED' || targetJunction.phase === 'YELLOW');
 
-    // Distance to approach stop bar (at progress ~0.45)
     const distToStop = 0.45 - car.progress;
     if (isRedOrYellow && distToStop > 0 && distToStop < 0.18) {
-      // Smooth deceleration to stop line
       car.currentSpeed *= 0.88;
       car.isStopped = true;
-      car.brakeMat.emissiveIntensity = 2.5; // Bright red brake lights on!
+      car.brakeMat.emissiveIntensity = 2.5;
     } else {
-      // Smooth acceleration back to cruising speed
       car.currentSpeed = Math.min(car.baseSpeed, car.currentSpeed + 0.0001);
       car.isStopped = false;
-      car.brakeMat.emissiveIntensity = 0.6; // Normal taillight
+      car.brakeMat.emissiveIntensity = 0.6;
     }
 
     car.progress += car.currentSpeed;
@@ -1666,7 +1649,6 @@ function on3DWindowResize() {
   renderer3D.setSize(w, h);
 }
 
-// Camera Preset Switcher
 function setCamPreset(type) {
   if (!camera3D || !controls3D) return;
   isFollowAmbulance = false;
@@ -1692,7 +1674,6 @@ function setCamPreset(type) {
   toast(`Camera view: ${type.toUpperCase()}`);
 }
 
-// Lighting & Environment Presets (Day / Dusk / Night)
 function setLightingPreset(mode) {
   const bNight = document.getElementById('btnLightNight');
   const bDusk = document.getElementById('btnLightDusk');
@@ -1818,7 +1799,7 @@ function runDijkstra(showToastNotice = false) {
     document.getElementById('statBestTime').textContent = '0 min';
     document.getElementById('statTimeSaved').textContent = '0 min';
     document.getElementById('candidatePathsBody').innerHTML = '<tr><td colspan="4" class="empty">Same junction selected.</td></tr>';
-    document.getElementById('segmentsBody').innerHTML = '<tr><td colspan="5" class="empty">No travel required.</td></tr>';
+    document.getElementById('segmentsBody').innerHTML = '<tr><td colspan="6" class="empty">No travel required.</td></tr>';
     update3DRouteRibbon(null);
     renderMap2D();
     return;
@@ -1901,6 +1882,7 @@ function runDijkstra(showToastNotice = false) {
       <td>${esc(seg.road)}</td>
       <td>${seg.distKm} km</td>
       <td>${seg.density}% ${lightPill}</td>
+      <td><b>${seg.greenSec}s green</b></td>
       <td><b>${seg.totalSegmentTimeMin} min</b></td>
     </tr>`;
   }).join('');
@@ -1950,8 +1932,8 @@ function renderMap2D(altPath = null) {
       <g>
         <circle cx="${x}" cy="${y}" r="14" fill="#08111d" stroke="${c}" stroke-width="4"/>
         <circle cx="${x}" cy="${y}" r="5" fill="${c}"/>
-        <rect x="${x - 18}" y="${y + 17}" width="36" height="15" rx="3" fill="#0b1626" stroke="#253a54" stroke-width="1"/>
-        <text x="${x}" y="${y + 28}" text-anchor="middle" fill="${c}" font-size="9" font-weight="bold">${j.density}%</text>
+        <rect x="${x - 22}" y="${y + 17}" width="44" height="15" rx="3" fill="#0b1626" stroke="#253a54" stroke-width="1"/>
+        <text x="${x}" y="${y + 28}" text-anchor="middle" fill="${c}" font-size="9" font-weight="bold">${j.density}% (${j.green}s)</text>
       </g>
     `;
   }).join('');
@@ -2013,7 +1995,7 @@ function render() {
       </div>
       <div class="density">
         <span>Traffic density</span>
-        <b>${j.density}%</b>
+        <b>${j.density}% · ${j.green}s Green</b>
       </div>
       <div class="bar">
         <span style="width:${j.density}%"></span>
@@ -2032,7 +2014,7 @@ function render() {
         <button class="small" onclick="phase('${j.id}','GREEN')">Green</button>
         <button class="small" onclick="phase('${j.id}','YELLOW')">Yellow</button>
         <button class="small danger" onclick="phase('${j.id}','RED')">Red</button>
-        <button class="small" onclick="auto('${j.id}')">Auto Density</button>
+        <button class="small" onclick="auto('${j.id}')">Auto Adaptive</button>
       </div>
     </div>
   `).join('');
@@ -2051,28 +2033,37 @@ function phase(id, p) {
   toast(`${id}: ${p}`);
 }
 
+// When vehicle volume changes: Traffic density automatically adapts green light seconds!
 function countSet(id, v) {
   const j = js.find(x => x.id === id);
   j.count = Math.max(0, Number(v) || 0);
   j.density = Math.min(100, Math.round((j.count / 80) * 100));
+  
+  // Adaptive Green Light Timing: Higher traffic volume/density automatically allocates longer green seconds
+  const adaptiveGreen = Math.max(15, Math.min(90, Math.round(15 + (j.density * 0.55) + (j.count * 0.25))));
+  j.green = adaptiveGreen;
+  
   render();
-  log(`${id} volume updated to ${j.count} (${j.density}% density)`);
+  log(`${id} volume: ${j.count} (${j.density}% density) -> Adaptive Green allocated: ${j.green}s`);
+  toast(`${id} adaptive green: ${j.green}s`);
 }
 
+// When green duration is manually changed: Directly impacts intersection delay & Dijkstra cost!
 function greenSet(id, v) {
   const j = js.find(x => x.id === id);
   j.green = Math.max(5, Math.min(180, Number(v) || 5));
   render();
-  log(`${id} green duration configured to ${j.green}s`);
+  log(`${id} green duration updated to ${j.green}s (affects intersection wait time in Dijkstra)`);
+  toast(`${id} green time set: ${j.green}s`);
 }
 
 function auto(id) {
   const j = js.find(x => x.id === id);
-  j.green = Math.max(15, Math.min(90, Math.round(15 + j.density * 0.65)));
+  j.green = Math.max(15, Math.min(90, Math.round(15 + (j.density * 0.55) + (j.count * 0.25))));
   j.phase = j.density > 35 ? 'GREEN' : 'YELLOW';
   render();
-  log(`${id} adaptive timing set: ${j.green}s green`);
-  toast('Adaptive timing updated');
+  log(`${id} adaptive timing updated: ${j.green}s green`);
+  toast(`${id} adaptive green: ${j.green}s`);
 }
 
 function activateEmergency() {
@@ -2196,7 +2187,7 @@ setInterval(tick, 1000);
 tick();
 init3D();
 render();
-alertMsg('NETRA Traffic System • Realistic 3D Digital Twin & Dijkstra Engine active.');
+alertMsg('NETRA Traffic System • 7-Signal City Digital Twin & Adaptive Green Wave active.');
 </script>
 </body>
 </html>
