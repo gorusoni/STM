@@ -471,22 +471,24 @@ th{color:var(--muted);font-weight:600}
             <button class="small" onclick="sync3DCameraToCurrentCCTV()">🎥 View from Mast in 3D</button>
           </div>
 
-          <!-- CCTV Viewport with Bounding Boxes & ANPR HUD -->
+          <!-- CCTV Viewport with Live Visual Feed, Traffic Light & Standing Vehicles -->
           <div class="cctv-viewport" id="cctvViewport">
-            <div class="cctv-scanline"></div>
+            <!-- Dedicated 2D CCTV Visual Canvas (Shows real street perspective, traffic lights and standing vehicles) -->
+            <canvas id="cctvCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;display:block;z-index:1;"></canvas>
+            <div class="cctv-scanline" style="z-index:3"></div>
             
-            <div class="cctv-hud-top">
-              <div><span class="cctv-rec-dot"></span>REC • <span id="cctvTimestamp">--:--:--</span></div>
+            <div class="cctv-hud-top" style="z-index:4">
+              <div><span class="cctv-rec-dot"></span>REC • <span id="cctvTimestamp">--:--:--</span> • PTZ-LIVE</div>
               <div id="cctvCoords">28.4595° N, 77.0266° E</div>
-              <div id="cctvSignalBadge" style="color:var(--green)">SIGNAL: GREEN (45s)</div>
+              <div id="cctvSignalBadge" style="color:var(--green);font-weight:bold;background:rgba(4,8,15,0.7);padding:2px 6px;border-radius:4px;border:1px solid rgba(255,255,255,0.1)">SIGNAL: GREEN (45s)</div>
             </div>
 
-            <!-- AI Bounding Boxes (Simulated live object detection) -->
-            <div id="bboxLayer"></div>
+            <!-- AI Bounding Boxes Layer -->
+            <div id="bboxLayer" style="z-index:2"></div>
 
-            <div class="cctv-hud-bottom">
-              <div>OPTICAL ZOOM: 1.0X • ISO 400 • F/1.8</div>
-              <div>EDGE AI MODEL: YOLOv10-ITS + OCR-ANPR</div>
+            <div class="cctv-hud-bottom" style="z-index:4">
+              <div>SENSOR: 1080p60 • F/1.8 • ISO 400</div>
+              <div>EDGE AI: YOLOv10 + ANPR ACTIVE</div>
               <div id="cctvDensityStat">QUEUE: 48 VEH (61%)</div>
             </div>
           </div>
@@ -1799,6 +1801,16 @@ function animate3D() {
     car.group.lookAt(car.end);
   });
 
+  // Continuous CCTV Camera Feed Sync
+  if (Math.floor(Date.now() / 200) % 2 === 0) {
+    renderCCTVVisualFeed();
+  }
+
+  // Continuous CCTV Camera Feed Sync
+  if (Math.floor(Date.now() / 200) % 2 === 0) {
+    renderCCTVVisualFeed();
+  }
+
   if (controls3D) controls3D.update();
   if (renderer3D && scene3D && camera3D) {
     renderer3D.render(scene3D, camera3D);
@@ -1944,61 +1956,460 @@ function selectCCTV(junctionId) {
   toast(`Switched to CCTV ${j.id} (${j.name})`);
 }
 
+// =======================================================
+// PHOTOREALISTIC CCTV CAMERA FEED: ROAD, LIGHTS & VEHICLES
+// =======================================================
+
+function renderCCTVVisualFeed() {
+  const canvas = document.getElementById('cctvCanvas');
+  if (!canvas || !canvas.getContext) return;
+
+  const rect = (canvas.getBoundingClientRect && canvas.getBoundingClientRect()) || {};
+  const w = rect.width > 0 ? rect.width : (canvas.clientWidth || 540);
+  const h = rect.height > 0 ? rect.height : (canvas.clientHeight || 240);
+
+  if (canvas.width !== Math.round(w) || canvas.height !== Math.round(h)) {
+    canvas.width = Math.round(w);
+    canvas.height = Math.round(h);
+  }
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const j = js.find(x => x.id === activeCCTVId) || js[0];
+  const isRed = j.phase === 'RED';
+  const isYellow = j.phase === 'YELLOW';
+  const isGreen = j.phase === 'GREEN';
+
+  // 1. CLEAR & BACKGROUND SKY
+  ctx.clearRect(0, 0, w, h);
+  const skyGrad = ctx.createLinearGradient(0, 0, 0, 80);
+  skyGrad.addColorStop(0, '#040913');
+  skyGrad.addColorStop(1, '#0a1628');
+  ctx.fillStyle = skyGrad;
+  ctx.fillRect(0, 0, w, 80);
+
+  // Distant city skyline silhouettes
+  ctx.fillStyle = '#061020';
+  ctx.fillRect(w * 0.05, 38, w * 0.12, 42);
+  ctx.fillRect(w * 0.22, 28, w * 0.15, 52);
+  ctx.fillRect(w * 0.65, 34, w * 0.14, 46);
+  ctx.fillRect(w * 0.82, 44, w * 0.12, 36);
+
+  // Distant glowing window specks
+  ctx.fillStyle = '#fef08a';
+  for (let s = 0; s < 12; s++) {
+    const wx = (w * 0.1) + (s * 36) % (w * 0.78);
+    const wy = 45 + (s * 7) % 25;
+    ctx.fillRect(wx, wy, 2, 2);
+  }
+
+  // 2. ROAD & PAVEMENT PERSPECTIVE
+  const horizonY = 70;
+  const vpX = w * 0.48; // Vanishing point
+
+  // Sidewalks
+  ctx.fillStyle = '#1e2d42';
+  // Left sidewalk
+  ctx.beginPath();
+  ctx.moveTo(vpX - 45, horizonY);
+  ctx.lineTo(0, h);
+  ctx.lineTo(w * 0.08, h);
+  ctx.lineTo(vpX - 35, horizonY);
+  ctx.fill();
+
+  // Right sidewalk
+  ctx.beginPath();
+  ctx.moveTo(vpX + 45, horizonY);
+  ctx.lineTo(w, h);
+  ctx.lineTo(w * 0.92, h);
+  ctx.lineTo(vpX + 35, horizonY);
+  ctx.fill();
+
+  // Road Asphalt Surface
+  const roadGrad = ctx.createLinearGradient(0, horizonY, 0, h);
+  roadGrad.addColorStop(0, '#151f2c');
+  roadGrad.addColorStop(1, '#0e1520');
+  ctx.fillStyle = roadGrad;
+  ctx.beginPath();
+  ctx.moveTo(vpX - 35, horizonY);
+  ctx.lineTo(vpX + 35, horizonY);
+  ctx.lineTo(w * 0.92, h);
+  ctx.lineTo(w * 0.08, h);
+  ctx.closePath();
+  ctx.fill();
+
+  // Double Yellow Center Median Divider Lines
+  ctx.strokeStyle = '#f59e0b';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(vpX - 1.5, horizonY);
+  ctx.lineTo(w * 0.495, h);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(vpX + 1.5, horizonY);
+  ctx.lineTo(w * 0.505, h);
+  ctx.stroke();
+
+  // White Dashed Lane Dividing Lines
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 1.8;
+  ctx.setLineDash([8, 8]);
+  // Left Lane Divider
+  ctx.beginPath();
+  ctx.moveTo(vpX - 18, horizonY);
+  ctx.lineTo(w * 0.28, h);
+  ctx.stroke();
+  // Right Lane Divider
+  ctx.beginPath();
+  ctx.moveTo(vpX + 18, horizonY);
+  ctx.lineTo(w * 0.72, h);
+  ctx.stroke();
+  ctx.setLineDash([]); // Reset line dash
+
+  // Zebra Pedestrian Crossing Stripes
+  ctx.fillStyle = 'rgba(241, 245, 249, 0.75)';
+  const zebraY = h * 0.52;
+  const numStripes = 10;
+  for (let z = 0; z < numStripes; z++) {
+    const zw = w * 0.045;
+    const zx = (w * 0.16) + (z * zw * 1.55);
+    ctx.fillRect(zx, zebraY, zw, 8);
+  }
+
+  // Bold White Stop Line
+  ctx.fillStyle = '#ffffff';
+  const stopY = h * 0.58;
+  ctx.fillRect(w * 0.12, stopY, w * 0.76, 5);
+
+  // 3. PHYSICAL TRAFFIC LIGHT GANTRY & GLOWING LAMPS IN CAMERA VIEW
+  const mastX = w * 0.76;
+  const mastY = 46;
+
+  // Overhead cantilever arm
+  ctx.strokeStyle = '#334155';
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.moveTo(w * 0.88, horizonY + 35);
+  ctx.lineTo(w * 0.88, 38);
+  ctx.lineTo(w * 0.64, 38);
+  ctx.stroke();
+
+  // 3-Aspect Traffic Signal Head Housing
+  ctx.fillStyle = '#050a12';
+  ctx.strokeStyle = '#475569';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(mastX, mastY, 18, 44, 4);
+  else ctx.rect(mastX, mastY, 18, 44);
+  ctx.fill();
+  ctx.stroke();
+
+  // Draw Lamps: Red, Amber, Green
+  const bulbRadius = 4.5;
+  const bulbCenterX = mastX + 9;
+
+  // RED BULB
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(bulbCenterX, mastY + 8, bulbRadius, 0, Math.PI * 2);
+  if (isRed) {
+    ctx.fillStyle = '#ff2244';
+    ctx.shadowColor = '#ff2244';
+    ctx.shadowBlur = 14;
+    ctx.fill();
+    // Corona ring
+    ctx.strokeStyle = '#ffa3b1';
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+  } else {
+    ctx.fillStyle = '#33080e';
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // YELLOW BULB
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(bulbCenterX, mastY + 22, bulbRadius, 0, Math.PI * 2);
+  if (isYellow) {
+    ctx.fillStyle = '#ffaa00';
+    ctx.shadowColor = '#ffaa00';
+    ctx.shadowBlur = 14;
+    ctx.fill();
+    ctx.strokeStyle = '#ffe499';
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+  } else {
+    ctx.fillStyle = '#332408';
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // GREEN BULB
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(bulbCenterX, mastY + 36, bulbRadius, 0, Math.PI * 2);
+  if (isGreen) {
+    ctx.fillStyle = '#00ff88';
+    ctx.shadowColor = '#00ff88';
+    ctx.shadowBlur = 14;
+    ctx.fill();
+    ctx.strokeStyle = '#a3ffd5';
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+  } else {
+    ctx.fillStyle = '#08331d';
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // Secondary Curb Traffic Signal Pole (Front Right)
+  const curbPoleX = w * 0.88;
+  const curbPoleY = stopY - 32;
+  ctx.fillStyle = '#050a12';
+  ctx.fillRect(curbPoleX - 6, curbPoleY, 12, 30);
+  ctx.strokeStyle = '#475569';
+  ctx.strokeRect(curbPoleX - 6, curbPoleY, 12, 30);
+
+  // Curb signal bulbs
+  ['RED','YELLOW','GREEN'].forEach((ph, idx) => {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(curbPoleX, curbPoleY + 5 + idx * 9, 3, 0, Math.PI * 2);
+    if (ph === 'RED' && isRed) {
+      ctx.fillStyle = '#ff2244'; ctx.shadowColor = '#ff2244'; ctx.shadowBlur = 8;
+    } else if (ph === 'YELLOW' && isYellow) {
+      ctx.fillStyle = '#ffaa00'; ctx.shadowColor = '#ffaa00'; ctx.shadowBlur = 8;
+    } else if (ph === 'GREEN' && isGreen) {
+      ctx.fillStyle = '#00ff88'; ctx.shadowColor = '#00ff88'; ctx.shadowBlur = 8;
+    } else {
+      ctx.fillStyle = '#1e293b';
+    }
+    ctx.fill();
+    ctx.restore();
+  });
+
+  // 4. DRAW STABLE STANDING VEHICLES QUEUED AT THE STOP LINE
+  // These represent the real physical traffic queued at this intersection
+  const isEmergencyActive = !!emergency;
+  const isBraking = isRed || isYellow;
+
+  const standingVehicles = [
+    // FRONT ROW (Stopped right behind white stop bar at stopY)
+    {
+      x: w * 0.28, y: stopY + 12, w: 66, h: 42,
+      type: 'SEDAN', color: '#1e3a8a', plate: 'DL01AB9912',
+      name: 'SEDAN [0.96]', conf: '96.2%', isAlert: false
+    },
+    {
+      x: w * 0.50, y: stopY + 16, w: 72, h: 45,
+      type: isEmergencyActive ? 'AMBULANCE' : 'CAR',
+      color: isEmergencyActive ? '#ffffff' : '#475569',
+      plate: isEmergencyActive ? 'HR26-AMB-001' : 'HR20AB7788',
+      name: isEmergencyActive ? 'EMERGENCY AMBULANCE' : 'SEDAN [0.97]',
+      conf: isEmergencyActive ? '99.4%' : '97.1%',
+      isAlert: isEmergencyActive
+    },
+    {
+      x: w * 0.72, y: stopY + 10, w: 70, h: 44,
+      type: 'SUV', color: '#0f172a', plate: 'HR26CD4581',
+      name: 'SUV [BLACKLISTED]', conf: '97.8%', isAlert: true
+    },
+
+    // SECOND ROW (Queued behind front row)
+    {
+      x: w * 0.32, y: stopY + 68, w: 90, h: 56,
+      type: 'BUS', color: '#047857', plate: 'HR55TR3004',
+      name: 'TRANSIT BUS [0.98]', conf: '98.5%', isAlert: false
+    },
+    {
+      x: w * 0.68, y: stopY + 64, w: 84, h: 52,
+      type: 'VAN', color: '#b45309', plate: 'HR39FQ2201',
+      name: 'DELIVERY VAN [0.95]', conf: '95.3%', isAlert: false
+    }
+  ];
+
+  standingVehicles.forEach(veh => {
+    // Only render queued rows corresponding to traffic density
+    if (veh.y > stopY + 50 && j.density < 40) return;
+
+    const vx = veh.x - veh.w / 2;
+    const vy = veh.y;
+    const vw = veh.w;
+    const vh = veh.h;
+
+    // Ground contact shadow
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+    ctx.beginPath();
+    ctx.ellipse(veh.x, vy + vh * 0.95, vw * 0.52, vh * 0.16, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Tires (Rear wheels)
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(vx + 3, vy + vh * 0.75, vw * 0.18, vh * 0.22);
+    ctx.fillRect(vx + vw - vw * 0.18 - 3, vy + vh * 0.75, vw * 0.18, vh * 0.22);
+
+    // Vehicle Main Body Shell
+    ctx.fillStyle = veh.color;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(vx, vy, vw, vh * 0.85, [6, 6, 2, 2]);
+    else ctx.fillRect(vx, vy, vw, vh * 0.85);
+    ctx.fill();
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+
+    // Rear Windshield Glass
+    ctx.fillStyle = '#0a192f';
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(vx + vw * 0.12, vy + vh * 0.12, vw * 0.76, vh * 0.38, 3);
+    else ctx.fillRect(vx + vw * 0.12, vy + vh * 0.12, vw * 0.76, vh * 0.38);
+    ctx.fill();
+
+    // Windshield reflection glint
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.beginPath();
+    ctx.moveTo(vx + vw * 0.2, vy + vh * 0.15);
+    ctx.lineTo(vx + vw * 0.35, vy + vh * 0.15);
+    ctx.lineTo(vx + vw * 0.25, vy + vh * 0.45);
+    ctx.lineTo(vx + vw * 0.15, vy + vh * 0.45);
+    ctx.fill();
+
+    // Red Taillights / Brake Lights
+    const tailW = vw * 0.16;
+    const tailH = vh * 0.14;
+    const tailY = vy + vh * 0.58;
+
+    ctx.save();
+    if (isBraking) {
+      // BRIGHT ILLUMINATED RED BRAKE LIGHTS (Vehicles standing at stop line)
+      ctx.fillStyle = '#ff2244';
+      ctx.shadowColor = '#ff2244';
+      ctx.shadowBlur = 10;
+    } else {
+      ctx.fillStyle = '#7f1d1d'; // Dim running tail lights
+    }
+    // Left brake light
+    ctx.fillRect(vx + 4, tailY, tailW, tailH);
+    // Right brake light
+    ctx.fillRect(vx + vw - tailW - 4, tailY, tailW, tailH);
+    ctx.restore();
+
+    // License Plate Box
+    const plateW = vw * 0.42;
+    const plateH = vh * 0.18;
+    const plateX = veh.x - plateW / 2;
+    const plateY = vy + vh * 0.62;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(plateX, plateY, plateW, plateH);
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 0.8;
+    ctx.strokeRect(plateX, plateY, plateW, plateH);
+
+    // Plate text
+    ctx.fillStyle = '#000000';
+    ctx.font = 'bold 7px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(veh.plate, veh.x, plateY + plateH * 0.75);
+
+    // AMBULANCE EMERGENCY FLASHERS
+    if (veh.type === 'AMBULANCE') {
+      const nowMs = Date.now();
+      const isRedBar = Math.floor(nowMs / 180) % 2 === 0;
+      ctx.save();
+      // Flasher body
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(veh.x - 14, vy - 6, 28, 6);
+      // Red flasher
+      ctx.fillStyle = isRedBar ? '#ff0033' : '#450a0a';
+      if (isRedBar) { ctx.shadowColor = '#ff0033'; ctx.shadowBlur = 12; }
+      ctx.fillRect(veh.x - 12, vy - 5, 10, 4);
+      // Blue flasher
+      ctx.fillStyle = !isRedBar ? '#0088ff' : '#082f49';
+      if (!isRedBar) { ctx.shadowColor = '#0088ff'; ctx.shadowBlur = 12; }
+      ctx.fillRect(veh.x + 2, vy - 5, 10, 4);
+      ctx.restore();
+    }
+
+    // 5. DRAW AI OBJECT DETECTION BOUNDING BOXES OVER STANDING VEHICLES
+    ctx.save();
+    const boxPad = 4;
+    const bx = vx - boxPad;
+    const by = vy - (veh.type === 'AMBULANCE' ? 10 : boxPad);
+    const bw = vw + boxPad * 2;
+    const bh = vh + boxPad * 2;
+
+    const strokeColor = veh.isAlert ? '#ef4444' : '#10b981';
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = 1.6;
+    ctx.strokeRect(bx, by, bw, bh);
+
+    // Corner brackets
+    const bLen = 8;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    // Top Left
+    ctx.moveTo(bx, by + bLen); ctx.lineTo(bx, by); ctx.lineTo(bx + bLen, by);
+    // Top Right
+    ctx.moveTo(bx + bw - bLen, by); ctx.lineTo(bx + bw, by); ctx.lineTo(bx + bw, by + bLen);
+    // Bottom Left
+    ctx.moveTo(bx, by + bh - bLen); ctx.lineTo(bx, by + bh); ctx.lineTo(bx + bLen, by + bh);
+    // Bottom Right
+    ctx.moveTo(bx + bw - bLen, by + bh); ctx.lineTo(bx + bw, by + bh); ctx.lineTo(bx + bw, by + bh - bLen);
+    ctx.stroke();
+
+    // AI Classification Label Tag
+    const tagText = `${veh.name} • ${veh.conf}`;
+    ctx.font = 'bold 9px monospace';
+    const textWidth = ctx.measureText(tagText).width;
+    const tagH = 13;
+    const tagW = textWidth + 8;
+    const tagX = bx;
+    const tagY = by - tagH - 1;
+
+    ctx.fillStyle = veh.isAlert ? 'rgba(239, 68, 68, 0.95)' : 'rgba(16, 185, 129, 0.9)';
+    ctx.fillRect(tagX, tagY, tagW, tagH);
+
+    ctx.fillStyle = veh.isAlert ? '#ffffff' : '#041f15';
+    ctx.textAlign = 'left';
+    ctx.fillText(tagText, tagX + 4, tagY + 9.5);
+    ctx.restore();
+  });
+}
+
 function updateCCTVFeedHUD() {
   const j = js.find(x => x.id === activeCCTVId);
   if (!j) return;
 
   const badge = document.getElementById('cctvSignalBadge');
-  if (j.phase === 'GREEN') {
-    badge.textContent = `SIGNAL: GREEN (${j.green}s)`;
-    badge.style.color = 'var(--green)';
-  } else if (j.phase === 'YELLOW') {
-    badge.textContent = `SIGNAL: YELLOW (4s)`;
-    badge.style.color = 'var(--yellow)';
-  } else {
-    badge.textContent = `SIGNAL: RED (${100 - j.green}s wait)`;
-    badge.style.color = 'var(--red)';
+  if (badge) {
+    if (j.phase === 'GREEN') {
+      badge.textContent = `SIGNAL: GREEN (${j.green}s)`;
+      badge.style.color = 'var(--green)';
+      badge.style.borderColor = 'rgba(49,208,160,0.5)';
+    } else if (j.phase === 'YELLOW') {
+      badge.textContent = `SIGNAL: YELLOW (4s)`;
+      badge.style.color = 'var(--yellow)';
+      badge.style.borderColor = 'rgba(255,181,71,0.5)';
+    } else {
+      badge.textContent = `SIGNAL: RED (${100 - j.green}s wait)`;
+      badge.style.color = 'var(--red)';
+      badge.style.borderColor = 'rgba(255,82,113,0.5)';
+    }
   }
 
-  document.getElementById('cctvTimestamp').textContent = new Date().toLocaleTimeString();
+  const ts = document.getElementById('cctvTimestamp');
+  if (ts) ts.textContent = new Date().toLocaleTimeString();
+
+  // Render the visual camera feed with road, traffic light and standing vehicles
+  renderCCTVVisualFeed();
 }
 
 function generateAIBoundingBoxes(j) {
-  const layer = document.getElementById('bboxLayer');
-  layer.innerHTML = '';
-
-  const numBoxes = Math.max(3, Math.min(8, Math.round(j.count / 12)));
-  document.getElementById('anprDetections').textContent = numBoxes + 6;
-
-  const detectedPlates = [
-    { plate: 'HR26-AMB-001', type: 'EMERGENCY AMBULANCE', conf: '99.4%', isAlert: true },
-    { plate: 'HR26CD4581', type: 'CAR [BLACKLISTED]', conf: '97.8%', isAlert: true },
-    { plate: 'DL01AB9912', type: 'SEDAN', conf: '98.2%', isAlert: false },
-    { plate: 'HR55TR3004', type: 'DELIVERY VAN', conf: '95.1%', isAlert: false },
-    { plate: 'DL08CY1208', type: 'SUV', conf: '96.5%', isAlert: false }
-  ];
-
-  for (let i = 0; i < numBoxes; i++) {
-    const d = detectedPlates[i % detectedPlates.length];
-    const top = 30 + (i * 24) % 150 + Math.random() * 12;
-    const left = 35 + (i * 70) % 290 + Math.random() * 20;
-    const w = 65 + (i % 2) * 20;
-    const h = 42 + (i % 2) * 10;
-
-    const box = document.createElement('div');
-    box.className = 'bbox' + (d.isAlert ? ' bbox-alert' : '');
-    box.style.top = `${top}px`;
-    box.style.left = `${left}px`;
-    box.style.width = `${w}px`;
-    box.style.height = `${h}px`;
-
-    const label = document.createElement('div');
-    label.className = 'bbox-label';
-    label.textContent = `${d.type} ${d.conf} • ${d.plate}`;
-    box.appendChild(label);
-
-    layer.appendChild(box);
-  }
+  // Bounding boxes are now seamlessly rendered on the photorealistic CCTV canvas directly over the standing vehicles!
+  renderCCTVVisualFeed();
 }
 
 // =======================================================
